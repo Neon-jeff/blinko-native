@@ -17,3 +17,9 @@ export const signupSchema = z.object({
 });
 
 export type SignUpFormData = z.infer<typeof signupSchema>;
+
+export const verifyEmailSchema = z.object({
+  otp: z.string().length(6, 'OTP must be exactly 6 characters long'),
+});
+
+export type OtpFormData = z.infer<typeof verifyEmailSchema>;

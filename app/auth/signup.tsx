@@ -5,8 +5,7 @@ import { Text } from '~/components/ui/text'
 
 const SignUpScreen = () => {
   return (
-    <Screen className='justify-center'>
-        <Text className='text-2xl font-semibold pb-10 text-center'>Create Account</Text>
+    <Screen className='justify-center px-0 pt-20 flex-1'>
       <SignUpForm />
     </Screen>
   )

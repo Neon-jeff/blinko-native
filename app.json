@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "blinko-mobile-app",
+    "name": "Blinko",
     "slug": "blinko-mobile-app",
     "scheme": "blinko",
     "version": "1.0.0",
@@ -12,7 +12,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      "expo-web-browser"
     ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",

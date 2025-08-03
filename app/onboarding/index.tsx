@@ -1,4 +1,4 @@
-import { FlatList, ImageSourcePropType, View } from 'react-native';
+import { ImageSourcePropType, View } from 'react-native';
 import React from 'react';
 import { Image } from 'expo-image';
 import { OnboardingImageOne, OnboardingImageTwo, OnboardingImageThree } from '~/assets/images';
@@ -29,25 +29,21 @@ const OnboardingScreen = () => {
     },
   ];
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  
+  const handleSkip = () => {
+    router.push('/auth/signup');
+  };
   return (
     <View className="" >
-      {/* <FlatList
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flex: 1 }}
-        horizontal
-        data={OnboardingData}
-        renderItem={({ item }) => ( */}
       {OnboardingData.map(
         (item, index) =>
           index === currentIndex && (
             <Animated.Image
               source={item.image as ImageSourcePropType}
-              className=" flex-1"
               style={{
                 width: '100%',
                 height: '50%',
                 position: 'absolute',
+                top: 0,
               }}
               key={index + ''}
               entering={FadeInUp.duration(500).delay(index===0?500:0)}
@@ -87,7 +83,7 @@ const OnboardingScreen = () => {
                 }}>
                 <Text>Next</Text>
               </Button>
-              <Button variant={'ghost'}>
+              <Button variant={'ghost'} onPress={handleSkip}>
                 <Text className="text-white ">Skip</Text>
               </Button>
             </View>
