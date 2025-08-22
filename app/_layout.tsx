@@ -12,7 +12,7 @@ import {
   Manrope_800ExtraBold,
 } from '@expo-google-fonts/manrope';
 import '../global.css';
-import { Toaster } from 'sonner-native'
+import { Toaster } from 'sonner-native';
 
 SplashScreen.preventAutoHideAsync();
 const RootLayout = () => {
@@ -48,25 +48,27 @@ const RootLayout = () => {
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="onboarding" options={{ headerShown: false }} />
           <Stack.Screen name="auth" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
-        <Toaster 
-        toastOptions={{
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
             style: {
-                backgroundColor: 'white',
-                borderRadius: 8,
-                padding: 20,
-                shadowOpacity:.05,
+              backgroundColor: 'white',
+              borderRadius: 8,
+              padding: 20,
+              shadowOpacity: 0.01,
             },
-            titleStyle:{
-                fontFamily: 'medium',
-                color: 'black',
+            titleStyle: {
+              fontFamily: 'medium',
+              color: 'black',
             },
-            descriptionStyle:{
-                fontFamily: 'regular',
-                color: 'gray',
+            descriptionStyle: {
+              fontFamily: 'regular',
+              color: 'gray',
             },
-
-        }} />
+          }}
+        />
       </GestureHandlerRootView>
     </React.Fragment>
   );

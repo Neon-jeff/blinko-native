@@ -85,7 +85,6 @@ const FormInput = <T extends FieldValues>({
               entering={FadeInLeft.duration(500)}
               exiting={FadeOutLeft.duration(100)}
               className=" flex-row items-start gap-1">
-                <X size={16} color={'orange'} />
               <Text className="text-xs  text-orange-500/70 ">{fieldState.error.message}</Text>
             </Animated.View>
           )}

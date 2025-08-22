@@ -27,7 +27,6 @@ const SignUpForm = () => {
   return (
     <KeyboardAvoidingView
       className="mt-20 flex-1 gap-6"
-      keyboardVerticalOffset={100}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -53,7 +52,7 @@ const SignUpForm = () => {
         </View>
         <View className="mt-8 gap-2 ">
           <Button className="" onPress={form.handleSubmit(handleSubmit)}>
-            <Text className="native:text-sm text-black">Login</Text>
+            <Text className="native:text-sm text-white">Login</Text>
           </Button>
           <View className="flex-row items-center justify-center gap-2">
             <View className="h-[.5] w-[45%] bg-gray-200" />
@@ -68,7 +67,7 @@ const SignUpForm = () => {
       </KeyboardAvoidingView>
       <View className="absolute bottom-10 left-0 right-0 flex-row items-center justify-center gap-1">
         <Text className="native:text-base">Don't have an account?</Text>
-        <Pressable className="px-0" onPress={handleCreateAccount}>
+        <Pressable className="px-0" onPress={handleCreateAccount} hitSlop={20}>
           <Text className="native:text-base font-semibold text-blue-500">Create account</Text>
         </Pressable>
       </View>

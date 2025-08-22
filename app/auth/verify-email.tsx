@@ -20,6 +20,10 @@ const VerifyEmail = () => {
     },
   });
   const [timer, setTimer] = React.useState(60);
+  const [progress, setProgress] = React.useState(20);
+  React.useEffect(() => {
+    setProgress(40); // Set progress to 20% for the verify email step
+  }, []);
   React.useEffect(() => {
     const interval = setInterval(() => {
       setTimer((prev) => {
@@ -36,15 +40,13 @@ const VerifyEmail = () => {
     console.log('OTP Verified:', data.otp);
     // Handle OTP verification logic here
     router.push('/auth/interests');
-    toast.success('Email verified successfully!',{
-      duration:Infinity
-    });
+    toast.success('Email verified successfully!');
   };
   return (
     <Screen className=" gap-10 px-5 pt-10 ">
-       <Progress value={20} />
+       <Progress value={progress} />
       <View className="gap-2 ">
-        <View className="items-center self-start pt-5 rounded-full bg-gray-50 p-3">
+        <View className="items-center self-start  rounded-full bg-gray-100 p-3">
           <Mail size={30} strokeWidth={1.5} />
         </View>
         <Text className=" android:text-3xl  font-semibold text-2xl text-black">
@@ -69,7 +71,7 @@ const VerifyEmail = () => {
         onPress={form.handleSubmit(handleVerifyOtp)}
         disabled={!form.formState.isValid}
         >
-        <Text className="native:text-base">Verify Email</Text>
+        <Text className="native:text-base text-white">Verify Email</Text>
       </Button>
     </Screen>
   );

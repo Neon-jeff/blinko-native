@@ -63,6 +63,10 @@ const SelectInterest = () => {
     },
   ];
   const [selectedInterests, setSelectedInterests] = React.useState<string[]>([]);
+  const [progress, setProgress] = React.useState(40);
+  React.useEffect(() => {
+    setProgress(60); // Set progress to 60% for the interests selection step
+  }, []);
   const handleSelectInterest = (interest: string) => {
     setSelectedInterests((prev) =>
       prev.includes(interest) ? prev.filter((item) => item !== interest) : [...prev, interest]
@@ -74,7 +78,7 @@ const SelectInterest = () => {
   }
   return (
     <SafeAreaView className="relative flex-1 gap-10 px-5 pt-10 ">
-      <Progress value={60} className="mb-5" />
+      <Progress value={progress} className="mb-5" />
       <ScrollView
         showsVerticalScrollIndicator={false}
         className="flex-1   "
@@ -112,7 +116,7 @@ const SelectInterest = () => {
           <Text className="native:text-base">Skip</Text>
         </Button>
         <Button className=" w-1/2" onPress={handleContinue}>
-          <Text className="native:text-base">Continue</Text>
+          <Text className="native:text-base text-white">Continue</Text>
         </Button>
       </View>
     </SafeAreaView>
