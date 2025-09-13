@@ -5,13 +5,14 @@ interface TabIconProps {
   focused: boolean;
   Icon: FunctionComponent<SvgProps>;
   isCreatePost: boolean;
+  isGroup: boolean;
 }
 
-const TabIcon = ({ focused, Icon, isCreatePost }: TabIconProps) => {
+const TabIcon = ({ focused, Icon, isCreatePost, isGroup }: TabIconProps) => {
   return (
     <>
       {Icon && (
-        <Icon height={22} width={22} stroke={isCreatePost? '#fff':focused ? '#2563eb' : '#6b7280'} strokeWidth={focused ? 2 : 1.4} />
+        <Icon height={26} width={26} stroke={isCreatePost? '#fff':focused ? isGroup ? '#2563eb' : '#fff' : '#989898'} strokeWidth={focused ? 2 : 1.4} fill={focused ? '#2563eb' : 'none'} />
       )}
     </>
   );

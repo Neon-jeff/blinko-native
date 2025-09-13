@@ -1,16 +1,19 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { SvgFromXml } from 'react-native-svg'
+import { View } from 'react-native';
+import { SvgFromXml } from 'react-native-svg';
 
 const Logo = () => {
   return (
-   <SvgFromXml height={20} xml={`<svg  viewBox="0 0 65 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M32.6443 19.8974C38.1151 19.8974 42.55 15.4624 42.55 9.99161C42.55 4.52084 38.1151 0.0858765 32.6443 0.0858765C27.1735 0.0858765 22.7385 4.52084 22.7385 9.99161C22.7385 15.4624 27.1735 19.8974 32.6443 19.8974Z" fill="#E49A10"/>
-<path d="M54.7882 19.8974C60.259 19.8974 64.6939 15.4624 64.6939 9.99161C64.6939 4.52084 60.259 0.0858765 54.7882 0.0858765C49.3174 0.0858765 44.8824 4.52084 44.8824 9.99161C44.8824 15.4624 49.3174 19.8974 54.7882 19.8974Z" fill="#000"/>
-<path d="M20.4061 0.0858765H0.604065V19.8879H20.4061V0.0858765Z" fill="#000"/>
+    <View className='p-5 self-center bg-blue-50 rounded-full items-center justify-center'>
+        <SvgFromXml
+      height={30}
+      width={30}
+      xml={`<svg width="40" height="40" viewBox="0 0 68 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M56.0894 44.7796H34.1582V36.8906C38.1373 31.417 44.6576 29.0272 52.0781 29.0016C53.4488 28.9962 54.7873 29.119 56.0894 29.3458V44.7796ZM34 68.5141C21.8191 68.5141 11.9092 58.9577 11.9092 47.2126V11.4859H22.2476V56.2654H53.9892C50.454 63.4956 42.8248 68.5141 34 68.5141ZM52.3609 17.5157C45.6782 17.4792 39.4352 19.3128 34.1582 22.5019V0H0V47.2126C0 65.2913 15.2513 80 34 80C52.7473 80 68 65.2913 68 47.2126V21.338C63.3307 18.9293 58.0159 17.5468 52.3609 17.5157Z" fill="#1F78FF"/>
 </svg>
-`}/>
-  )
-}
+`}
+    />
+    </View>
+  );
+};
 
-export default Logo
+export default Logo;

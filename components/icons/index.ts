@@ -1,1 +1,5 @@
 export { default as Google } from './Google'
+export {default as BlinkoCurrency} from './BlinkoCurrency'
+export {default as Dots} from './Dots'
+export {default as Logo} from './Logo'
+export {default as Notification} from './Notification'

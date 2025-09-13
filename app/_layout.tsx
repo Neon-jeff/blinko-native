@@ -13,6 +13,9 @@ import {
 } from '@expo-google-fonts/manrope';
 import '../global.css';
 import { Toaster } from 'sonner-native';
+import { KeyboardProvider } from "react-native-keyboard-controller";
+import AppDrawer from '~/components/navigation/drawer';
+import { PortalHost } from '@rn-primitives/portal';
 
 SplashScreen.preventAutoHideAsync();
 const RootLayout = () => {
@@ -37,8 +40,10 @@ const RootLayout = () => {
   }
   return (
     <React.Fragment>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack
+      <KeyboardProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+        {/* <AppDrawer> */}
+             <Stack
           screenOptions={{
             contentStyle: {
               flex: 1,
@@ -49,6 +54,7 @@ const RootLayout = () => {
           <Stack.Screen name="onboarding" options={{ headerShown: false }} />
           <Stack.Screen name="auth" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="chat" options={{ headerShown: false }} />
         </Stack>
         <Toaster
           position="bottom-center"
@@ -69,7 +75,10 @@ const RootLayout = () => {
             },
           }}
         />
+        <PortalHost />
+        {/* </AppDrawer> */}
       </GestureHandlerRootView>
+      </KeyboardProvider>
     </React.Fragment>
   );
 };

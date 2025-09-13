@@ -78,7 +78,6 @@ const SelectInterest = () => {
   }
   return (
     <SafeAreaView className="relative flex-1 gap-10 px-5 pt-10 ">
-      <Progress value={progress} className="mb-5" />
       <ScrollView
         showsVerticalScrollIndicator={false}
         className="flex-1   "
@@ -102,10 +101,11 @@ const SelectInterest = () => {
                 className={cn(
                   'flex-row items-center gap-2 rounded-full border border-transparent bg-gray-100/50 p-4 px-6',
                   selectedInterests.includes(interest.title) &&
-                    'border border-orange-100 bg-orange-50/80'
+                    ' bg-blue-500'
                 )}>
                 <Text className="text-base">{interest.emoji}</Text>
-                <Text className="text-base">{interest.title}</Text>
+                <Text className={cn('text-base',  selectedInterests.includes(interest.title) &&
+                    ' text-white')}>{interest.title}</Text>
               </Animated.View>
             </Pressable>
           ))}

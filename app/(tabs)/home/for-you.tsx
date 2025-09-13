@@ -6,12 +6,10 @@ import { Text } from '~/components/ui/text';
 
 const Home = () => {
   return (
-    <View className="bg-transparent px-0">
-      <SharedHeader />
+    <View className=" px-0">
       <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
-        <View className="mt-4 px-4">
-          <Text className="font-semibold text-2xl">My Feeds</Text>
-          <View className='gap-5 mt-5'>
+        <View className="mt-4 px-3 ">
+          <View className='gap-5 '>
             {
               [...Array(10).keys()].map((_, index) => (
                 <PostCard

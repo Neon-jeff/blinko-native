@@ -9,10 +9,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-[#1F77FF] web:hover:opacity-90  active:opacity-90 rounded-full',
+        default: 'bg-[#1F77FF]/80  web:hover:opacity-90  active:opacity-90 rounded-full',
         destructive: 'bg-destructive web:hover:opacity-90 active:opacity-90',
         outline:
-          'border border-input bg-background web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent',
+          'border border-gray-500 bg-background rounded-full web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent',
         secondary: 'bg-gray-100 rounded-full web:hover:opacity-80 active:opacity-80',
         ghost: 'web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent',
         link: 'web:underline-offset-4 web:hover:underline web:focus:underline',
@@ -32,7 +32,7 @@ const buttonVariants = cva(
 );
 
 const buttonTextVariants = cva(
-  'web:whitespace-nowrap text-sm native:text-base font-medium text-foreground web:transition-colors',
+  'web:whitespace-nowrap text-xs native:text-sm font-medium text-foreground web:transition-colors',
   {
     variants: {
       variant: {
@@ -44,7 +44,7 @@ const buttonTextVariants = cva(
         link: 'text-primary group-active:underline',
       },
       size: {
-        default: 'native:text-lg',
+        default: 'native:text-base',
         sm: 'native:text-lg',
         lg: 'native:text-2xl',
         icon: '',

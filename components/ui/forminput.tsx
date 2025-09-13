@@ -18,7 +18,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Input } from './input';
 import { constants } from '~/constants';
-import { X } from 'lucide-react-native';
 import { View } from 'react-native';
 
 interface FormInputProps<T extends FieldValues> {
@@ -42,9 +41,7 @@ const FormInput = <T extends FieldValues>({
   const animatedTextStyle = useAnimatedStyle(() => ({
     color: textcolor.value,
   }));
-  function handleFocusTextAnimation() {
-    console.log('focused ');
-    
+  function handleFocusTextAnimation() {    
     textcolor.value = withTiming(constants.theme.label.focused, { duration: 200 });
   }
   function handleBlurTextAnimation() {
@@ -65,11 +62,10 @@ const FormInput = <T extends FieldValues>({
       defaultValue={defaultValue}
       render={() => (
         <Animated.View className="relative gap-2 flex-1 h-full">
-            <View className="flex-row items-center gap-2">
-                 
-          <AnimatedText style={[animatedTextStyle]} className=" android:text-base ios:text-sm">
-            {label}
-          </AnimatedText>
+          <View className="flex-row items-center gap-2">
+            <AnimatedText  className=" android:text-base font-semibold text-gray-700 ios:text-base">
+              {label}
+            </AnimatedText>
             </View>
           <Input
             onFocus={handleFocusTextAnimation}
@@ -85,7 +81,7 @@ const FormInput = <T extends FieldValues>({
               entering={FadeInLeft.duration(500)}
               exiting={FadeOutLeft.duration(100)}
               className=" flex-row items-start gap-1">
-              <Text className="text-xs  text-orange-500/70 ">{fieldState.error.message}</Text>
+              <Text className="text-sm  text-red-500/90 ">{fieldState.error.message}</Text>
             </Animated.View>
           )}
         </Animated.View>

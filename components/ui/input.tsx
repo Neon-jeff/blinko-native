@@ -3,6 +3,7 @@ import {
   NativeSyntheticEvent,
   TextInput,
   TextInputFocusEventData,
+  View,
   type TextInputProps,
 } from 'react-native';
 import { cn } from '@/lib/utils';
@@ -14,11 +15,13 @@ import { constants } from '~/constants';
 interface InputProps extends TextInputProps {
   label?: string;
   isInvalid?: boolean;
+  Icon?: React.ReactNode;
+  containerClassName?: string;
 }
 
 const Input = React.forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
   (
-    { className, placeholderClassName, onFocus, onBlur, secureTextEntry, isInvalid, ...props },
+    { className, placeholderClassName, onFocus, onBlur, secureTextEntry, isInvalid, Icon,containerClassName, ...props },
     ref
   ) => {
     const focusProgress = useSharedValue(0);
@@ -64,16 +67,19 @@ const Input = React.forwardRef<React.ComponentRef<typeof TextInput>, InputProps>
     }
     return (
       <Animated.View
-        className=" relative justify-center rounded-xl bg-gray-50 "
-        style={[containerAnimatedStyle]}>
+        className={cn("relative flex-row gap-1 bg-gray-100/80 border border-gray-200/80 justify-center rounded-xl  ", containerClassName)}
+     >
+          {
+            Icon && <View className='w-8 items-start justify-center pl-2'>{Icon}</View>
+          }
         <TextInput
           ref={ref}
           className={cn(
-            '   native:text-sm font-regular native:leading-[1.25] h-12 rounded-md px-3 text-sm text-gray-600 file:border-0  file:bg-transparent file:font-medium web:py-2 lg:text-sm ',
+            '   native:text-base font-medium flex-1 font-regular native:leading-[1.25] h-12 px-3 text-sm  text-gray-800 file:border-0  file:bg-transparent file:font-medium web:py-2 lg:text-sm ',
             props.editable === false && 'opacity-50 web:cursor-not-allowed',
             className
           )}
-          placeholderClassName={cn('text-muted-foreground', placeholderClassName)}
+          placeholderClassName={cn('text-muted-foreground ', placeholderClassName)}
           onFocus={handlefocus}
           onBlur={handleblur}
           secureTextEntry={secureText}
@@ -81,7 +87,8 @@ const Input = React.forwardRef<React.ComponentRef<typeof TextInput>, InputProps>
           autoCapitalize="sentences"
           {...props}
           cursorColor={'#000'}
-          placeholderTextColor={'#b0b0b0'}
+          placeholderTextColor={'#6b7280'}
+  
         />
         {secureTextEntry && (
           <Button

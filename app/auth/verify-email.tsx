@@ -11,6 +11,8 @@ import { Mail } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { toast } from 'sonner-native';
 import { Progress } from '~/components/ui/progress';
+import { Image } from 'expo-image';
+import { Email } from '~/assets/images';
 
 const VerifyEmail = () => {
   const form = useForm<OtpFormData>({
@@ -39,17 +41,16 @@ const VerifyEmail = () => {
   const handleVerifyOtp = (data: { otp: string }) => {
     console.log('OTP Verified:', data.otp);
     // Handle OTP verification logic here
-    router.push('/auth/interests');
+    router.push('/auth/details');
     toast.success('Email verified successfully!');
   };
   return (
-    <Screen className=" gap-10 px-5 pt-10 ">
-       <Progress value={progress} />
+    <Screen className=" gap-10 px-5 pt-10  ">
       <View className="gap-2 ">
-        <View className="items-center self-start  rounded-full bg-gray-100 p-3">
-          <Mail size={30} strokeWidth={1.5} />
+        <View className="items-center rounded-full  p-3">
+          <Image source={Email} style={{ width: 200, height: 250 }} contentFit='contain' />
         </View>
-        <Text className=" android:text-3xl  font-semibold text-2xl text-black">
+        <Text className=" android:text-3xl mt-10  font-semibold text-2xl text-black">
           Verify Your Email
         </Text>
         <Text className="text-base text-gray-500">

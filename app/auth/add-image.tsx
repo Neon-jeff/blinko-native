@@ -1,6 +1,5 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Progress } from '~/components/ui/progress';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Check, Image as ImageIcon } from 'iconsax-react-native';
@@ -8,7 +7,7 @@ import React from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 import { cn } from '~/lib/utils';
-import { CheckCircle } from 'lucide-react-native';
+import { router } from 'expo-router';
 
 const AddImage = () => {
   const [progress, setProgress] = React.useState(60);
@@ -18,6 +17,7 @@ const AddImage = () => {
   }, []);
   const handleContinue = () => {
     // Handle continue logic here, e.g., navigate to the next screen
+    router.push('(tabs)/home');
   };
   const handleUploadImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -36,10 +36,9 @@ const AddImage = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} className="gap-10 bg-white px-5 pt-10">
-      <Progress value={progress} className="" />
       <View className=" flex-1 justify-center">
-        <View className="absolute left-0 right-0 top-0 flex-col  justify-center gap-3 pt-5">
-          <Text className="font-semibold   text-4xl">Add your profile picture</Text>
+        <View className="absolute left-0 right-0 top-0 flex-col w-4/5  justify-center gap-3 pt-5">
+          <Text className="font-semibold  text-4xl">Add your profile picture</Text>
           <Text className="text-base text-gray-400">
             A profile picture helps others recognize you and makes your profile more engaging.
           </Text>

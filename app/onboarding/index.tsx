@@ -1,4 +1,4 @@
-import { ImageSourcePropType, View } from 'react-native';
+import { ImageSourcePropType, Platform, Pressable, View } from 'react-native';
 import React from 'react';
 import { OnboardingImageOne, OnboardingImageTwo, OnboardingImageThree } from '~/assets/images';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,11 +9,14 @@ import Animated, { FadeInUp, runOnJS } from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as NavigationBar from 'expo-navigation-bar';
+import { Logo } from '~/components/icons';
 
 const OnboardingScreen = () => {
-    async function handleNavigationBarTheme() {
-    await NavigationBar.setBackgroundColorAsync('black');
-    await NavigationBar.setButtonStyleAsync('light');
+  async function handleNavigationBarTheme() {
+    if (Platform.OS === 'android') {
+      await NavigationBar.setBackgroundColorAsync('black');
+      await NavigationBar.setButtonStyleAsync('light');
+    }
   }
   React.useEffect(() => {
     handleNavigationBarTheme();
@@ -40,6 +43,9 @@ const OnboardingScreen = () => {
   const handleSkip = () => {
     router.replace('/auth/signup');
   };
+  const handleGuest = ()=>{
+    router.replace('/(tabs)/home');
+  }
   const gesture = Gesture.Pan().onEnd((event) => {
     if (event.translationX < -50 && currentIndex < OnboardingData.length - 1) {
       runOnJS(setCurrentIndex)(currentIndex + 1);
@@ -51,6 +57,9 @@ const OnboardingScreen = () => {
   return (
     <GestureDetector gesture={gesture}>
       <View className="flex-1">
+        <View className='mt-20'>
+              <Text className='text-white text-2xl font-semibold text-center'>Blinko</Text>
+          </View>
         {OnboardingData.map(
           (item, index) =>
             index === currentIndex && (
@@ -58,27 +67,24 @@ const OnboardingScreen = () => {
                 source={item.image as ImageSourcePropType}
                 style={{
                   width: '100%',
-                  height: '60%',
+                  height: '50%',
                   position: 'absolute',
-                  top: 0,
+                  top: '12%',
                 }}
                 key={index + ''}
                 entering={FadeInUp.duration(500).delay(index === 0 ? 100 : 0)}
               />
             )
         )}
-        {/* )}
-      //   keyExtractor={(item) => item.title}
-      // /> */}
         <View className=" flex-1 justify-end ">
           <LinearGradient
             colors={['transparent', 'rgba(0, 0, 0, .99)', 'rgba(0, 0, 0, 1)']}
             style={{
-              height: '85%',
+              height: '100%',
               justifyContent: 'flex-end',
             }}>
             <View className="justify-between  gap-y-12 px-12 ">
-              <View className="gap-y-4 items-center ">
+              <View className="items-center gap-y-4 ">
                 <Text className="text-center font-medium  text-5xl leading-[45px] text-white">
                   {OnboardingData[currentIndex].title}
                 </Text>
@@ -87,22 +93,23 @@ const OnboardingScreen = () => {
                 </Text>
               </View>
               <CarouselIndicator currentIndex={currentIndex} />
-              <View className="gap-2 pb-10 ">
-                <Button
-                  variant={'default'}
-                  onPress={() => {
-                    if (currentIndex < OnboardingData.length - 1) {
-                      setCurrentIndex(currentIndex + 1);
-                    } else {
+              <View className='pb-10 gap-5'>
+                <View className=" gap-5 ">
+                  <Button
+                    variant={'default'}
+                    onPress={() => {
                       router.replace('/auth/signup');
                       // Navigate to the main app screen or next step
-                    }
-                  }}>
-                  <Text className='text-white'>Next</Text>
-                </Button>
-                <Button variant={'ghost'} onPress={handleSkip}>
-                  <Text className="text-white ">Skip</Text>
-                </Button>
+                    }}>
+                    <Text className="font-semibold text-white">Create Account</Text>
+                  </Button>
+                  <Button variant={'outline'} onPress={handleSkip}>
+                    <Text className="font-semibold text-white">Login</Text>
+                  </Button>
+                </View>
+                <Pressable onPress={handleGuest}>
+                  <Text className=" text-white text-center">Explore as guest</Text>
+                </Pressable>
               </View>
             </View>
           </LinearGradient>

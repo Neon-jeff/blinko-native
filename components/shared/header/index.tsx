@@ -1,25 +1,33 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { HambergerMenu, Message, Notification, NotificationCircle } from 'iconsax-react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Image } from 'expo-image';
-import { BackdropBlur, Canvas,Rect } from '@shopify/react-native-skia';
-
+import { Bolt, Search } from 'lucide-react-native';
+import { Text } from '~/components/ui/text';
+import { Notification } from '~/components/icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SharedHeader = () => {
+  const { top } = useSafeAreaInsets();
   return (
-    <View className=" left-0 right-0 flex-row items-center justify-between bg-transparent p-4 pt-16 ">
-      <ProfileImage />
-      <Text className="absolute left-0 right-0 pt-12 text-center font-bold text-xl text-blue-600">
-        Blinko
-      </Text>
-      <View className="flex-row gap-5">
-        <Notification color="black" size={24} fill={'black'}  />
-        <Message color="black" size={24} fill={'black'}  />
+    <View
+      style={{
+        paddingTop: top,
+      }}>
+      <View
+        style={{
+          backgroundColor: 'rgb(255, 255, 255)',
+        }}
+        className=" w-full flex-row items-center justify-between px-5  ">
+        <Pressable>
+          <Bolt color={'black'} size={25} />
+        </Pressable>
+        <View className="absolute left-0 right-0 items-center font-semibold text-xl text-blue-600">
+          <Text className="font-semibold text-lg text-blue-600">Blinko</Text>
+        </View>
+        <View className="flex-row gap-5">
+          <Notification />
+          <Search color="black" size={24} strokeWidth={2} />
+        </View>
       </View>
-      <Canvas style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-        <Rect x={0} y={0} width={100} height={100} color="blue" />
-        <BackdropBlur blur={10}  />
-      </Canvas>
     </View>
   );
 };
