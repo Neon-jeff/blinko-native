@@ -8,8 +8,8 @@ export interface User {
   createdAt: string
   updatedAt: string
   __v: number
-  profile: Profile
-  tokens: Tokens
+  profile: Profile | null
+  tokens: Tokens | null
 }
 
 export interface Profile {

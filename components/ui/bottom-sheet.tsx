@@ -1,12 +1,6 @@
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-  ViewProps,
-} from "react-native";
-import React, { forwardRef, useEffect, useImperativeHandle } from "react";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Pressable, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
   useAnimatedReaction,
@@ -14,10 +8,10 @@ import Animated, {
   useSharedValue,
   withSpring,
   withTiming,
-} from "react-native-reanimated";
+} from 'react-native-reanimated';
 import { Portal } from '@rn-primitives/portal';
-import { sizes } from "~/constants/sizes";
-
+import { sizes } from '~/constants/sizes';
+import { cn } from '~/lib/utils';
 
 /**
  * BottomSheetModal component that displays a bottom sheet with gesture handling.
@@ -40,26 +34,22 @@ interface BottomSheetRootProps {
 const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
   ({ children }, ref) => {
     const [showSheet, setShowSheet] = React.useState(false);
-    useImperativeHandle(
-      ref,
-      () => {
-        return {
-          open: () => {
-            sheetTranslateY.value = withTiming(0, {
-              duration: 300,
-            });
-            setShowSheet(true);
-          },
-          close: () => {
-            sheetTranslateY.value = withTiming(initialHeight + 300, {
-              duration: 300,
-            });
-            setShowSheet(false);
-          },
-        };
-      },
-      []
-    );
+    useImperativeHandle(ref, () => {
+      return {
+        open: () => {
+          sheetTranslateY.value = withTiming(0, {
+            duration: 300,
+          });
+          setShowSheet(true);
+        },
+        close: () => {
+          sheetTranslateY.value = withTiming(initialHeight + 300, {
+            duration: 300,
+          });
+          setShowSheet(false);
+        },
+      };
+    }, []);
     useEffect(() => {
       if (showSheet) {
         sheetTranslateY.value = withTiming(0, {
@@ -74,7 +64,7 @@ const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
     const sheetTranslateY = useSharedValue(initialHeight + 200);
     const sheetHeight = useSharedValue(initialHeight);
     function handleCloseSheet() {
-      "worklet";
+      'worklet';
       sheetTranslateY.value = withTiming(initialHeight + 300, {
         duration: 300,
       });
@@ -150,7 +140,7 @@ const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
       <Portal name="bottom-sheet-modal">
         <Pressable style={[styles.overlayContainer]} onPress={handleCloseSheet}>
           <GestureDetector gesture={gesture}>
-            <Animated.View style={[styles.sheetContainer, animatedRootStyle]}>
+            <Animated.View className="gap-5" style={[styles.sheetContainer, animatedRootStyle]}>
               <View style={styles.dragger} />
               {children}
             </Animated.View>
@@ -161,49 +151,68 @@ const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
   }
 );
 
-BottomSheetModalRoot.displayName = "BottomSheetModalRoot";
+BottomSheetModalRoot.displayName = 'BottomSheetModalRoot';
 
 interface SubProps {
   children?: React.ReactNode;
+  className?: string;
 }
 
 function BottomSheetTitle({ children }: SubProps) {
   return <Pressable style={styles.headerContainer}>{children}</Pressable>;
 }
-BottomSheetTitle.displayName = "BottomSheetTitle";
+BottomSheetTitle.displayName = 'BottomSheetTitle';
 
-function BottomSheetContent({ children }: SubProps) {
+function BottomSheetContent({ children, className }: SubProps) {
   return (
     <ScrollView contentContainerStyle={styles.contentContainer}>
-      {children}
+      <View className={cn('flex-1', className)}>{children}</View>
     </ScrollView>
   );
 }
-BottomSheetContent.displayName = "BottomSheetContent";
+
+BottomSheetContent.displayName = 'BottomSheetContent';
+
+function BottomSheetTrigger({
+  ref,
+  children,
+}: {
+  ref: React.RefObject<BottomSheetRef>;
+  children?: React.ReactNode;
+}) {
+  function handleOpen() {
+    if (ref.current) {
+      ref.current.open();
+    }
+  }
+  return <TouchableOpacity onPress={handleOpen}>{children}</TouchableOpacity>;
+}
+BottomSheetTrigger.displayName = 'BottomSheetTrigger';
 
 export const BottomSheetModal = {
   Root: BottomSheetModalRoot,
   Title: BottomSheetTitle,
   Content: BottomSheetContent,
+  Trigger: BottomSheetTrigger,
 };
 
 const styles = StyleSheet.create({
   overlayContainer: {
     flex: 1,
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.7)",
-    justifyContent: "flex-end",
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'flex-end',
   },
   sheetContainer: {
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingVertical: 10,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   headerContainer: {
     padding: 12,
@@ -212,17 +221,16 @@ const styles = StyleSheet.create({
     borderBottomColor: 'gray',
   },
   dragger: {
-    width: 24,
-    height: 5,
-    backgroundColor: 'gray',
+    width: 44,
+    height: 4,
+    backgroundColor: 'black',
     borderRadius: 9999,
-    alignSelf: "center",
-    position: "absolute",
-    top: 12,
+    alignSelf: 'center',
   },
   contentContainer: {
     padding: 12,
     paddingTop: 10,
     paddingBottom: 24,
+    flex: 1,
   },
 });

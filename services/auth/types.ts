@@ -28,3 +28,8 @@ export interface ResetPasswordBody {
     token: number;
     newPassword: string;
 }
+
+export interface ValidateCredentialsBody {
+  identifier: string;
+  password: string;
+}

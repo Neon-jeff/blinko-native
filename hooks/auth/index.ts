@@ -1,6 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { AuthService } from '~/services/auth';
-import { ChangePasswordBody, CreateAccountBody, LoginBody } from '~/services/auth/types';
+import {
+  ChangePasswordBody,
+  CreateAccountBody,
+  LoginBody,
+  ValidateCredentialsBody,
+} from '~/services/auth/types';
+import { Profile, User } from '~/types';
 
 const auth_service = () => new AuthService();
 
@@ -34,8 +40,7 @@ export function useChangePassword() {
 
 export function useVerifyEmail() {
   return useMutation({
-    mutationFn: (verificationCode: number) =>
-      auth_service().verifyEmail(verificationCode),
+    mutationFn: (verificationCode: number) => auth_service().verifyEmail(verificationCode),
   });
 }
 
@@ -49,5 +54,31 @@ export function useResetPassword() {
   return useMutation({
     mutationFn: (data: { verificationCode: string; newPassword: string }) =>
       auth_service().resetPassword(data),
+  });
+}
+
+export function useValidateCredentials() {
+  return useMutation({
+    mutationFn: (data: ValidateCredentialsBody) => auth_service().validateCredentials(data),
+  });
+}
+
+export function useValidateIdentifier() {
+  return useMutation({
+    mutationFn: (data: Pick<ValidateCredentialsBody, 'identifier'>) => {
+      return auth_service().validateIdentifier(data);
+    }
+  });
+}
+
+export const useResendVerificationEmail = () => {
+  return useMutation({
+    mutationFn: (email: string) => auth_service().resendVerificationEmail(email),
+  });
+}
+
+export function useUpdateProfile() {
+  return useMutation({
+    mutationFn: (data: Partial<Profile>) => auth_service().updateProfile(data),
   });
 }

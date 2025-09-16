@@ -5,15 +5,17 @@ import { toast } from 'sonner-native';
 import { env } from '~/env';
 import { UserState } from '~/store/auth/types';
 import { local_store } from '~/store/local-store';
+import { APIError } from './error';
 
 export const http = ky.extend({
   prefixUrl: env.API_BASE_URL,
   hooks: {
     beforeRequest: [
       (request) => {
-        const store = JSON.parse(
+        request.headers.set('x-api-key', env.API_KEY);
+        const {state:store} = JSON.parse(
           local_store.getString('user-storage') || 'null'
-        ) as UserState | null;
+        ) as {state:UserState | null};
         if (store && store.user && store.user.tokens) {
           request.headers.set('Authorization', `Bearer ${store.user.tokens.accessToken}`);
         }
@@ -21,14 +23,15 @@ export const http = ky.extend({
     ],
     afterResponse: [
       async (_input, _option, response) => {
-        if (response.status == 401) {
-          useAuthStore.getState().logout();
-          router.replace('/login');
-          toast.error('Session expired, please log in again');
-          return;
-        }
+        // if (response.status == 401) {
+        //   useAuthStore.getState().logout();
+        //   router.replace('/auth/login');
+        //   toast.error('Session expired, please log in again');
+        //   return;
+        // }
         if (!response.ok) {
-          throw new HTTPError(response, _input, _option);
+          const responseData = await response.json();
+          throw new APIError('API request failed', responseData as any);
         }
         return response;
       },

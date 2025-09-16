@@ -1,18 +1,21 @@
-import { http,ApiResponse } from '~/api';
-import { User } from '~/types';
-import { ChangePasswordBody, CreateAccountBody, LoginBody } from './types';
+import { http, ApiResponse } from '~/api';
+import { Profile, User } from '~/types';
+import { ChangePasswordBody, CreateAccountBody, LoginBody, ValidateCredentialsBody } from './types';
 
 export class AuthService {
   private routes = {
-    login: '/auth/login',
-    logout: '/auth/logout',
-    register: '/auth/register',
-    tokens: '/auth/refresh-tokens',
-    verifyEmail: '/auth/verify-email',
-    resendVerificationEmail: '/auth/resend-verification-email',
-    changePassword: '/auth/change-password',
-    forgotPassword: '/auth/forgot-password',
-    resetPassword: '/auth/reset-password',
+    login: 'auth/login',
+    logout: 'auth/logout',
+    register: 'auth/register',
+    tokens: 'auth/refresh-tokens',
+    verifyEmail: 'auth/verify-email',
+    resendVerificationEmail: 'auth/resend-verification-email',
+    changePassword: 'auth/change-password',
+    forgotPassword: 'auth/forgot-password',
+    resetPassword: 'auth/reset-password',
+    validateCredentials: 'auth/validate-credentials',
+    validateIdentifier: 'auth/identifierValidator',
+    profile:'profile'
   };
   async login(data: LoginBody) {
     try {
@@ -78,7 +81,7 @@ export class AuthService {
     }
   }
 
-  async changePassword(data:ChangePasswordBody) {
+  async changePassword(data: ChangePasswordBody) {
     try {
       const response = await http.post<ApiResponse<null>>(this.routes.changePassword, {
         json: data,
@@ -110,6 +113,46 @@ export class AuthService {
       return await response.json();
     } catch (error) {
       console.error('Reset password failed:', error);
+      throw error;
+    }
+  }
+
+  async validateCredentials(data: ValidateCredentialsBody) {
+    try {
+      const response = await http.post<ApiResponse<null>>(this.routes.validateCredentials, {
+        json: data,
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Validate credentials failed:', error);
+      throw error;
+    }
+  }
+  async validateIdentifier(data: Pick<ValidateCredentialsBody, 'identifier'>) {
+    // Implement the method logic here
+    try {
+      const response = await http.post<
+        ApiResponse<{
+          message: string;
+          exists: boolean;
+        }>
+      >(this.routes.validateIdentifier, {
+        json: data,
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Validate identifier failed:', error);
+      throw error;
+    }
+  }
+  async updateProfile(data: Partial<Profile>) {
+    try {
+      const response = await http.put<ApiResponse<null>>(this.routes.profile, {
+        json: data,
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Update profile failed:', error);
       throw error;
     }
   }

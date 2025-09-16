@@ -2,14 +2,20 @@ import { z } from 'zod';
 
 export const loginSchema = z.object({
   email: z.email(),
-  password: z.string().min(6).max(100),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters long')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
 export const signupSchema = z.object({
   email: z.email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters long'),
+  password: z.string().min(6, ''),
 });
 
 export type SignUpFormData = z.infer<typeof signupSchema>;
@@ -20,7 +26,7 @@ export const verifyEmailSchema = z.object({
 
 export const detailsFormSchema = z.object({
   fullName: z.string().min(5, 'Full name must be at least 5 characters long'),
-  username: z.string().min(5, 'Username must be at least 3 characters long'),
+  // username: z.string().min(5, 'Username must be at least 5 characters long'),
   dateOfBirth: z.string().min(10, 'Date of birth must be in the format YYYY-MM-DD'),
 });
 

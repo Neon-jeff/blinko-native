@@ -11,49 +11,44 @@ import { Text } from './text';
 import Animated, {
   FadeInLeft,
   FadeOutLeft,
-  FadeOutRight,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
 } from 'react-native-reanimated';
-import { Input } from './input';
 import { constants } from '~/constants';
-import { ActivityIndicator, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
+import DatePicker from 'react-native-date-picker';
+import React from 'react';
+import { cn } from '~/lib/utils';
+import { Calendar1 } from 'iconsax-react-native';
 import { Dot } from 'lucide-react-native';
+import { BottomSheetModal, BottomSheetRef } from './bottom-sheet';
+import { FlashList } from '@shopify/flash-list';
 
-interface FormInputProps<T extends FieldValues> {
+interface FormSelectProps<T extends FieldValues,K> {
   name: Path<T>;
   control: Control<T>;
   rules?: RegisterOptions<T>;
   defaultValue?: PathValue<T, Path<T>>;
   label: string;
+  data: K[];
+  RenderItem: ({ item, selected }: { item: K; selected?: boolean }) => React.ReactNode;
   placeholder?: string;
-  isLoading?: boolean;
-  onChangeText?:(text?:string)=>void
-  showMessage?:boolean
 }
 
-const FormInput = <T extends FieldValues>({
+const FormSelectModal = <T extends FieldValues, K>({
   name,
   control,
   rules,
   defaultValue,
   label,
-  placeholder,
-  isLoading,
-  onChangeText,
-  showMessage = true,
-}: FormInputProps<T>) => {
+  data,
+  RenderItem,
+  placeholder = 'Select',
+}: FormSelectProps<T, K>) => {
   const textcolor = useSharedValue(constants.theme.label.blur);
   const animatedTextStyle = useAnimatedStyle(() => ({
     color: textcolor.value,
   }));
-  function handleFocusTextAnimation() {
-    textcolor.value = withTiming(constants.theme.label.focused, { duration: 200 });
-  }
-  function handleBlurTextAnimation() {
-    textcolor.value = withTiming(constants.theme.label.blur, { duration: 200 });
-  }
   const { field, fieldState } = useController({
     name,
     control,
@@ -61,10 +56,8 @@ const FormInput = <T extends FieldValues>({
     defaultValue,
   });
   const AnimatedText = Animated.createAnimatedComponent(Text);
-  const handleChange=(text:string)=>{
-    field.onChange(text)
-    onChangeText?.(text)
-  }
+  const modalRef = React.useRef<BottomSheetRef>(null);
+
   return (
     <Controller
       control={control}
@@ -77,23 +70,25 @@ const FormInput = <T extends FieldValues>({
               {label}
             </AnimatedText>
           </View>
-          <View>
-            <Input
-              onFocus={handleFocusTextAnimation}
-              onBlur={handleBlurTextAnimation}
-              onChangeText={handleChange}
-              placeholder={placeholder}
-              secureTextEntry={name == 'password' || name == 'confirmPassword'}
-              isInvalid={!!fieldState.error}
-            />
-            {isLoading && (
-              <View className="absolute right-5 top-1/2 -translate-y-1/2">
-                <ActivityIndicator color={'#000'} size={8} />
-              </View>
-            )}
-          </View>
+          <TouchableOpacity
+            className="h-12 justify-center rounded-lg border border-gray-200 bg-gray-100 px-2"
+            onPress={() => modalRef.current?.open()}>
+            <Text>{field.value || placeholder}</Text>
+          </TouchableOpacity>
 
-          {fieldState.error && showMessage && (
+          <BottomSheetModal.Root ref={modalRef}>
+            <BottomSheetModal.Content className="px-2 pt-5">
+              <FlashList
+                data={data}
+                extraData={{selected: field.value}}
+                renderItem={({ item }) => <RenderItem item={item} />}
+                estimatedItemSize={40}
+                keyExtractor={(_, index) => index.toString() + label}
+              />
+            </BottomSheetModal.Content>
+          </BottomSheetModal.Root>
+
+          {fieldState.error && (
             <Animated.View
               entering={FadeInLeft.duration(200)}
               exiting={FadeOutLeft.duration(100)}
@@ -108,4 +103,4 @@ const FormInput = <T extends FieldValues>({
   );
 };
 
-export default FormInput;
+export default FormSelectModal;

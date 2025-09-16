@@ -11,14 +11,15 @@ import { Text } from './text';
 import Animated, {
   FadeInLeft,
   FadeOutLeft,
-  FadeOutRight,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
 } from 'react-native-reanimated';
-import { Input } from './input';
 import { constants } from '~/constants';
-import { ActivityIndicator, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
+import DatePicker from 'react-native-date-picker';
+import React from 'react';
+import { cn } from '~/lib/utils';
+import { Calendar1 } from 'iconsax-react-native';
 import { Dot } from 'lucide-react-native';
 
 interface FormInputProps<T extends FieldValues> {
@@ -27,33 +28,21 @@ interface FormInputProps<T extends FieldValues> {
   rules?: RegisterOptions<T>;
   defaultValue?: PathValue<T, Path<T>>;
   label: string;
-  placeholder?: string;
-  isLoading?: boolean;
-  onChangeText?:(text?:string)=>void
-  showMessage?:boolean
 }
 
-const FormInput = <T extends FieldValues>({
+const FormDatePicker = <T extends FieldValues>({
   name,
   control,
   rules,
   defaultValue,
   label,
-  placeholder,
-  isLoading,
-  onChangeText,
-  showMessage = true,
 }: FormInputProps<T>) => {
   const textcolor = useSharedValue(constants.theme.label.blur);
+  const [showDatePicker, setShowDatePicker] = React.useState(false);
+
   const animatedTextStyle = useAnimatedStyle(() => ({
     color: textcolor.value,
   }));
-  function handleFocusTextAnimation() {
-    textcolor.value = withTiming(constants.theme.label.focused, { duration: 200 });
-  }
-  function handleBlurTextAnimation() {
-    textcolor.value = withTiming(constants.theme.label.blur, { duration: 200 });
-  }
   const { field, fieldState } = useController({
     name,
     control,
@@ -61,10 +50,11 @@ const FormInput = <T extends FieldValues>({
     defaultValue,
   });
   const AnimatedText = Animated.createAnimatedComponent(Text);
-  const handleChange=(text:string)=>{
-    field.onChange(text)
-    onChangeText?.(text)
+
+  function openDatePicker() {
+    setShowDatePicker(true);
   }
+
   return (
     <Controller
       control={control}
@@ -77,28 +67,40 @@ const FormInput = <T extends FieldValues>({
               {label}
             </AnimatedText>
           </View>
-          <View>
-            <Input
-              onFocus={handleFocusTextAnimation}
-              onBlur={handleBlurTextAnimation}
-              onChangeText={handleChange}
-              placeholder={placeholder}
-              secureTextEntry={name == 'password' || name == 'confirmPassword'}
-              isInvalid={!!fieldState.error}
-            />
-            {isLoading && (
-              <View className="absolute right-5 top-1/2 -translate-y-1/2">
-                <ActivityIndicator color={'#000'} size={8} />
-              </View>
-            )}
-          </View>
+          <TouchableOpacity
+            className="h-12 w-full  flex-row items-center justify-between rounded-xl border  border-gray-200 bg-gray-100/80 px-2"
+            onPress={openDatePicker}>
+            <Text
+              className={cn('native:text-base  text-gray-700', !field.value && 'text-gray-500')}>
+              {field.value ? field.value : 'YYYY-MM-DD'}
+            </Text>
+            <View className="">
+              <Calendar1 color="#374151" size={25} />
+            </View>
+          </TouchableOpacity>
 
-          {fieldState.error && showMessage && (
+          <DatePicker
+            modal
+            mode="date"
+            open={showDatePicker}
+            date={new Date()}
+            onCancel={() => {
+              setShowDatePicker(false);
+            }}
+            onConfirm={(date) => {
+              const formattedDate = date.toISOString().split('T')[0];
+              field.onChange(formattedDate);
+              setShowDatePicker(false);
+            }}
+            className="w-full"
+          />
+
+          {fieldState.error && (
             <Animated.View
               entering={FadeInLeft.duration(200)}
               exiting={FadeOutLeft.duration(100)}
               className=" flex-row items-center ">
-              <Dot color={'#c2410c'} size={30} />
+                <Dot color={'#c2410c'} size={30}/>
               <Text className="text-sm  text-orange-700 ">{fieldState.error.message}</Text>
             </Animated.View>
           )}
@@ -108,4 +110,4 @@ const FormInput = <T extends FieldValues>({
   );
 };
 
-export default FormInput;
+export default FormDatePicker;
