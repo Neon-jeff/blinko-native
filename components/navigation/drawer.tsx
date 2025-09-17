@@ -8,16 +8,19 @@ const AppDrawer = ({children}:{children:React.ReactNode}) => {
   return (
     <Drawer
     style={{ flex: 1 }}
-      open={isDrawerOpen}
+      open
       onClose={() => setIsDrawerOpen(false)}
       onOpen={() => setIsDrawerOpen(true)}
-      drawerType='back'
+      // drawerType='back'
       renderDrawerContent={() => (
         <View>
           <Text>Drawer Content</Text>
         </View>
       )}>
-      {children}
+      <View className='flex-1 bg-red-100'>
+        <Text>Hello</Text>
+        {children}
+      </View>
     </Drawer>
   );
 };

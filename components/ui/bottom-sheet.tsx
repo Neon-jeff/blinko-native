@@ -141,7 +141,7 @@ const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
         <Pressable style={[styles.overlayContainer]} onPress={handleCloseSheet}>
           <GestureDetector gesture={gesture}>
             <Animated.View className="gap-5" style={[styles.sheetContainer, animatedRootStyle]}>
-              <View style={styles.dragger} />
+              <View className='h-1.5 w-1/6 bg-gray-300 rounded-full self-center'/>
               {children}
             </Animated.View>
           </GestureDetector>
@@ -159,7 +159,7 @@ interface SubProps {
 }
 
 function BottomSheetTitle({ children }: SubProps) {
-  return <Pressable style={styles.headerContainer}>{children}</Pressable>;
+  return <Pressable style={styles.headerContainer} className='border-b border-gray-200'>{children}</Pressable>;
 }
 BottomSheetTitle.displayName = 'BottomSheetTitle';
 
@@ -216,9 +216,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     padding: 12,
-    paddingTop: 16,
-    borderBottomWidth: 1.5,
-    borderBottomColor: 'gray',
+    paddingTop: 16
   },
   dragger: {
     width: 44,

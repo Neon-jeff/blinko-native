@@ -33,3 +33,14 @@ export interface ValidateCredentialsBody {
   identifier: string;
   password: string;
 }
+
+export interface Country {
+  code: string
+  name: string
+  flag: string
+}
+
+export interface State {
+  name: string
+  code: string
+}

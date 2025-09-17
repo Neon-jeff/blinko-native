@@ -1,7 +1,14 @@
 import { z } from 'zod';
 
 export const loginSchema = z.object({
-  email: z.email(),
+  email: z.email('Enter a valid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters long'),
+});
+
+export type LoginFormData = z.infer<typeof loginSchema>;
+
+export const signupSchema = z.object({
+  email: z.email('Invalid email address'),
   password: z
     .string()
     .min(8, 'Password must be at least 8 characters long')
@@ -9,13 +16,6 @@ export const loginSchema = z.object({
     .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     .regex(/[0-9]/, 'Password must contain at least one number')
     .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
-});
-
-export type LoginFormData = z.infer<typeof loginSchema>;
-
-export const signupSchema = z.object({
-  email: z.email('Invalid email address'),
-  password: z.string().min(6, ''),
 });
 
 export type SignUpFormData = z.infer<typeof signupSchema>;

@@ -1,8 +1,5 @@
 import { View, ScrollView } from 'react-native';
 import PostCard from '~/components/cards/posts';
-import SharedHeader from '~/components/shared/header';
-import Screen from '~/components/ui/screen';
-import { Text } from '~/components/ui/text';
 
 const Home = () => {
   return (
@@ -29,6 +26,7 @@ const Home = () => {
           </View>
         </View>
       </ScrollView>
+    
     </View>
   );
 };

@@ -8,22 +8,26 @@ const initialState: UserState = {
   user: null,
   isAuthenticated: false,
   isOnboardingComplete: false,
+  isGuestUser: false,
 };
 
 export const useAuthStore = create<UserState & UserActions>()(
   persist(
     (set, get) => ({
       ...initialState,
-      login: (userData: User) => set({ user: userData }),
-      logout: () => set({ user: null }),
+      login: (userData: User) => set({ user: userData, isAuthenticated: true }),
+      logout: () => set({ user: null, isAuthenticated: false }),
       updateProfile: (profileData: Partial<User>) =>
         set((state) => ({
           user: state.user ? { ...state.user, ...profileData } : null,
         })),
+      completeOnboarding: () => set({ isOnboardingComplete: true }),
+      setIsGuestUser: (isGuest: boolean) => set({ isGuestUser: isGuest }),
+      setUser: (user: User | null) => set({ user }),
     }),
     {
       name: 'user-storage',
       storage: createJSONStorage(() => zustandStorage),
     }
   )
-)
+);

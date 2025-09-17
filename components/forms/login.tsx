@@ -8,6 +8,11 @@ import { Text } from '../ui/text';
 import { Google } from '../icons';
 import Logo from '../icons/Logo';
 import { router } from 'expo-router';
+import { useLogin } from '~/hooks/auth';
+import { useAuthStore } from '~/store/auth';
+import React from 'react';
+import { BottomSheetRef } from '../ui/bottom-sheet';
+import ErrorSheet from '../ui/error-sheet';
 
 const SignUpForm = () => {
   const form = useForm<LoginFormData>({
@@ -16,25 +21,45 @@ const SignUpForm = () => {
       email: '',
       password: '',
     },
+    mode:'onChange'
   });
+  const handleLogin = useLogin();
+  const { login } = useAuthStore();
+  const sheetRef = React.useRef<BottomSheetRef>(null);
   function handleSubmit(data: LoginFormData) {
-    console.log('Form Data:', data);
-    router.replace('/auth/verify-email');
+    handleLogin.mutate(
+      {
+        identifier: data.email.toLocaleLowerCase(),
+        password: data.password,
+      },
+      {
+        onSuccess(data) {
+          login({ ...data.data });
+          router.push('/(tabs)/home');
+        },
+        onError() {
+          sheetRef.current?.open();
+        },
+      }
+    );
+  }
+  function onSubmit() {
+    form.handleSubmit(handleSubmit)();
   }
   const handleCreateAccount = () => {
     router.push('/auth/signup');
   };
   return (
-    <KeyboardAvoidingView
-      className="mt-20 flex-1 gap-6"
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <View className=" flex-1 gap-20 pt-10">
+        <Logo variant="text" />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="justify-center">
+        className="flex-1 ">
         <View className="gap-2">
-          <Text className=" android:text-3xl  font-semibold text-2xl text-black">
+          <Text className=" android:text-3xl text-center  font-semibold text-3xl text-black">
             Welcome Back!
           </Text>
+          <Text className=" native:text-base text-gray-600 text-center">Login to your account to continue</Text>
         </View>
         <View className="mt-10 gap-5 ">
           <FormInput
@@ -51,9 +76,13 @@ const SignUpForm = () => {
           />
         </View>
         <View className="mt-8 gap-2 ">
-          <Button className="" onPress={form.handleSubmit(handleSubmit)}>
-            <Text className="native:text-sm text-white">Login</Text>
-          </Button>
+          <Button
+            className=""
+            onPress={onSubmit}
+            label="Login"
+            disabled={handleLogin.isPending}
+            loading={handleLogin.isPending}
+          />
           <View className="flex-row items-center justify-center gap-2">
             <View className="h-[.5] w-[45%] bg-gray-200" />
             <Text className="text-center">Or</Text>
@@ -71,7 +100,11 @@ const SignUpForm = () => {
           <Text className="native:text-base font-semibold text-blue-500">Create account</Text>
         </Pressable>
       </View>
-    </KeyboardAvoidingView>
+      <ErrorSheet
+        ref={sheetRef}
+        errorMessage={handleLogin.error?.response?.message || 'An error occured while logging in'}
+      />
+    </View>
   );
 };
 

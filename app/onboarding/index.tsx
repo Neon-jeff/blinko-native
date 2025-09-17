@@ -1,6 +1,6 @@
 import { ImageSourcePropType, Platform, Pressable, View } from 'react-native';
 import React from 'react';
-import { OnboardingImageOne, OnboardingImageTwo, OnboardingImageThree } from '~/assets/images';
+import { Earn, OnboardingImageOne, OnlineMarketing, Streamer } from '~/assets/images';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
@@ -10,6 +10,7 @@ import { router } from 'expo-router';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as NavigationBar from 'expo-navigation-bar';
 import { Logo } from '~/components/icons';
+import { useAuthStore } from '~/store/auth';
 
 const OnboardingScreen = () => {
   async function handleNavigationBarTheme() {
@@ -21,6 +22,7 @@ const OnboardingScreen = () => {
   React.useEffect(() => {
     handleNavigationBarTheme();
   }, []);
+  const {setIsGuestUser,setUser} = useAuthStore();
   const OnboardingData = [
     {
       image: OnboardingImageOne,
@@ -29,21 +31,26 @@ const OnboardingScreen = () => {
         'Discover, share, and connect on Blinko—where trending topics and fresh finds make scrolling meaningful',
     },
     {
-      image: OnboardingImageTwo,
-      title: 'Shop and sell in one place',
+      image: OnlineMarketing,
+      title: 'Shop and sell seamlessly',
       description: 'Stay updated with the latest trends and discussions happening around you.',
     },
     {
-      image: OnboardingImageThree,
-      title: 'Stream and get rewards ',
+      image: Earn,
+      title: 'Monitize your contents',
       description: 'Post your thoughts, ideas, and experiences to engage with the community.',
     },
   ];
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  const handleSkip = () => {
+  const handleCreateAccount = () => {
     router.replace('/auth/signup');
   };
+  const handleLogin = () => {
+    router.replace('/auth/login');
+  }
   const handleGuest = ()=>{
+    setUser(null)
+    setIsGuestUser(true)
     router.replace('/(tabs)/home');
   }
   const gesture = Gesture.Pan().onEnd((event) => {
@@ -57,7 +64,7 @@ const OnboardingScreen = () => {
   return (
     <GestureDetector gesture={gesture}>
       <View className="flex-1">
-        <View className='mt-20'>
+        <View className='mt-16'>
               <Text className='text-white text-2xl font-semibold text-center'>Blinko</Text>
           </View>
         {OnboardingData.map(
@@ -97,18 +104,15 @@ const OnboardingScreen = () => {
                 <View className=" gap-5 ">
                   <Button
                     variant={'default'}
-                    onPress={() => {
-                      router.replace('/auth/signup');
-                      // Navigate to the main app screen or next step
-                    }}>
+                    onPress={handleCreateAccount  }>
                     <Text className="font-semibold text-white">Create Account</Text>
                   </Button>
-                  <Button variant={'outline'} onPress={handleSkip}>
+                  <Button variant={'outline'} onPress={handleLogin}>
                     <Text className="font-semibold text-white">Login</Text>
                   </Button>
                 </View>
                 <Pressable onPress={handleGuest}>
-                  <Text className=" text-white text-center">Explore as guest</Text>
+                  <Text className=" text-white font-semibold text-center">Explore as guest</Text>
                 </Pressable>
               </View>
             </View>

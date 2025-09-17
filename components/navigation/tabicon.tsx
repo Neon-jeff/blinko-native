@@ -1,9 +1,10 @@
+import { IconProps } from 'iconsax-react-native';
 import { FunctionComponent } from 'react';
 import { SvgProps } from 'react-native-svg';
 
 interface TabIconProps {
   focused: boolean;
-  Icon: FunctionComponent<SvgProps>;
+  Icon: FunctionComponent<IconProps>;
   isCreatePost: boolean;
   isGroup: boolean;
 }
@@ -12,7 +13,7 @@ const TabIcon = ({ focused, Icon, isCreatePost, isGroup }: TabIconProps) => {
   return (
     <>
       {Icon && (
-        <Icon height={26} width={26} stroke={isCreatePost? '#fff':focused ? isGroup ? '#2563eb' : '#fff' : '#989898'} strokeWidth={focused ? 2 : 1.4} fill={focused ? '#2563eb' : 'none'} />
+        <Icon size={26} color={focused ? 'black': '#989898'} variant={(focused || isCreatePost)? 'Bold' : 'Outline'}  />
       )}
     </>
   );

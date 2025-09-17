@@ -14,9 +14,9 @@ import {
 import '../global.css';
 import { Toaster } from 'sonner-native';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import AppDrawer from '~/components/navigation/drawer';
 import { PortalHost } from '@rn-primitives/portal';
 import ReactQueryClientProvider from '~/components/query-client';
+import { AppSheetProvider } from '~/components/providers/app-sheet';
 
 SplashScreen.preventAutoHideAsync();
 const RootLayout = () => {
@@ -44,40 +44,41 @@ const RootLayout = () => {
       <ReactQueryClientProvider>
         <KeyboardProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
-            {/* <AppDrawer> */}
-            <Stack
-              screenOptions={{
-                contentStyle: {
-                  flex: 1,
-                  backgroundColor: 'white',
-                },
-              }}>
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-              <Stack.Screen name="auth" options={{ headerShown: false }} />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="chat" options={{ headerShown: false }} />
-            </Stack>
-            <Toaster
-              position="bottom-center"
-              toastOptions={{
-                style: {
-                  backgroundColor: 'white',
-                  borderRadius: 8,
-                  padding: 20,
-                  shadowOpacity: 0.01,
-                },
-                titleStyle: {
-                  fontFamily: 'medium',
-                  color: 'black',
-                },
-                descriptionStyle: {
-                  fontFamily: 'regular',
-                  color: 'gray',
-                },
-              }}
-            />
-            <PortalHost />
+            <AppSheetProvider>
+              <Stack
+                screenOptions={{
+                  contentStyle: {
+                    flex: 1,
+                    backgroundColor: 'white',
+                  },
+                }}>
+                <Stack.Screen name="index" options={{ headerShown: false }} />
+                <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                <Stack.Screen name="auth" options={{ headerShown: false }} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="chat" options={{ headerShown: false }} />
+              </Stack>
+              <Toaster
+                position="bottom-center"
+                toastOptions={{
+                  style: {
+                    backgroundColor: 'white',
+                    borderRadius: 8,
+                    padding: 20,
+                    shadowOpacity: 0.01,
+                  },
+                  titleStyle: {
+                    fontFamily: 'medium',
+                    color: 'black',
+                  },
+                  descriptionStyle: {
+                    fontFamily: 'regular',
+                    color: 'gray',
+                  },
+                }}
+              />
+            </AppSheetProvider>
+             <PortalHost />
             {/* </AppDrawer> */}
           </GestureHandlerRootView>
         </KeyboardProvider>

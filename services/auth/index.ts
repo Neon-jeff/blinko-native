@@ -1,6 +1,6 @@
 import { http, ApiResponse } from '~/api';
 import { Profile, User } from '~/types';
-import { ChangePasswordBody, CreateAccountBody, LoginBody, ValidateCredentialsBody } from './types';
+import { ChangePasswordBody, Country, CreateAccountBody, LoginBody, State, ValidateCredentialsBody } from './types';
 
 export class AuthService {
   private routes = {
@@ -15,7 +15,8 @@ export class AuthService {
     resetPassword: 'auth/reset-password',
     validateCredentials: 'auth/validate-credentials',
     validateIdentifier: 'auth/identifierValidator',
-    profile:'profile'
+    profile: 'profile',
+    countries: 'location/countries',
   };
   async login(data: LoginBody) {
     try {
@@ -153,6 +154,28 @@ export class AuthService {
       return await response.json();
     } catch (error) {
       console.error('Update profile failed:', error);
+      throw error;
+    }
+  }
+
+  async getCountries() {
+    try {
+      const response = await http.get<ApiResponse<Country[]>>(this.routes.countries);
+      return await response.json();
+    } catch (error) {
+      console.error('Get countries failed:', error);
+      throw error;
+    }
+  }
+
+  async getStates(countryCode: string) {
+    try {
+      const response = await http.get<ApiResponse<State[]>>(
+        `${this.routes.countries}/${countryCode}/states`
+      );
+      return await response.json();
+    } catch (error) {
+      console.error('Get states failed:', error);
       throw error;
     }
   }

@@ -6,6 +6,7 @@ import { sizes } from '~/constants/sizes';
 import Dots from '~/components/icons/Dots';
 import {HeartIcon, MessageCircle, PlusCircle, Send } from 'lucide-react-native';
 import { BlinkoCurrency } from '~/components/icons';
+import { Heart, Messages2 } from 'iconsax-react-native';
 
 interface PostCardProps {
   title: string;
@@ -49,8 +50,8 @@ const PostCard = ({ title, content, date, creator, images }: PostCardProps) => {
             <Image
               source={{ uri: item }}
               style={{
-                width: sizes.screen.width - 70,
-                height: 240,
+                width: sizes.screen.width * .4,
+                height: 200,
                 borderRadius: 8,
               }}
             />
@@ -73,7 +74,7 @@ const PostCard = ({ title, content, date, creator, images }: PostCardProps) => {
 function PostInteractions() {
   const interactions = [
     {
-      icon: HeartIcon,
+      icon: Heart,
       label: 'Like',
       count:200
     },
@@ -98,7 +99,7 @@ function PostInteractions() {
       {interactions.map((interaction, index) => (
         <Pressable key={index} className=" flex-row gap-1.5 items-center">
           {/* {interaction.icon} */}
-          <interaction.icon size={20} color='#989898' strokeWidth={1.7} />
+          <interaction.icon size={25} color='#989898' strokeWidth={1.7} />
           <Text className="text-xs text-gray-500">{interaction.count}</Text>
         </Pressable>
       ))}

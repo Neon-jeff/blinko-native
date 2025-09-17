@@ -33,6 +33,7 @@ interface FormSelectProps<T extends FieldValues,K> {
   data: K[];
   RenderItem: ({ item, selected }: { item: K; selected?: boolean }) => React.ReactNode;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 const FormSelectModal = <T extends FieldValues, K>({
@@ -44,6 +45,7 @@ const FormSelectModal = <T extends FieldValues, K>({
   data,
   RenderItem,
   placeholder = 'Select',
+  disabled = false,
 }: FormSelectProps<T, K>) => {
   const textcolor = useSharedValue(constants.theme.label.blur);
   const animatedTextStyle = useAnimatedStyle(() => ({
@@ -66,14 +68,15 @@ const FormSelectModal = <T extends FieldValues, K>({
       render={() => (
         <Animated.View className="relative h-full flex-1 gap-2">
           <View className="flex-row items-center gap-2">
-            <AnimatedText className=" android:text-base ios:text-base font-semibold text-gray-700">
+            <AnimatedText className=" android:text-base ios:text-base font-semibold text-gray-600">
               {label}
             </AnimatedText>
           </View>
           <TouchableOpacity
-            className="h-12 justify-center rounded-lg border border-gray-200 bg-gray-100 px-2"
+            disabled={disabled}
+            className="h-12 justify-center rounded-xl border border-gray-100 bg-gray-100 px-2"
             onPress={() => modalRef.current?.open()}>
-            <Text>{field.value || placeholder}</Text>
+            <Text className={cn('text-base', !field.value && 'text-gray-400')}>{field.value || placeholder}</Text>
           </TouchableOpacity>
 
           <BottomSheetModal.Root ref={modalRef}>

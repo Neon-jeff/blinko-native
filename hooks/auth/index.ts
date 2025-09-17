@@ -6,9 +6,11 @@ import {
   LoginBody,
   ValidateCredentialsBody,
 } from '~/services/auth/types';
+import { ProfileService } from '~/services/profile';
 import { Profile, User } from '~/types';
 
 const auth_service = () => new AuthService();
+const profile_service = () => new ProfileService()
 
 export function useLogin() {
   return useMutation({
@@ -80,5 +82,26 @@ export const useResendVerificationEmail = () => {
 export function useUpdateProfile() {
   return useMutation({
     mutationFn: (data: Partial<Profile>) => auth_service().updateProfile(data),
+  });
+}
+
+export function useGetCountries(){
+  return useQuery({
+    queryKey: ['countries'],
+    queryFn: () => auth_service().getCountries(),
+  });
+}
+
+export function useGetStates(countryCode: string){
+  return useQuery({
+    queryKey: ['states', countryCode],
+    queryFn: () => auth_service().getStates(countryCode),
+    enabled: !!countryCode,
+  });
+}
+
+export function useUploadProfileImage(){
+  return useMutation({
+    mutationFn: (uri: string) => profile_service().uploadPhoto(uri),
   });
 }
