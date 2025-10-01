@@ -57,6 +57,16 @@ const RootLayout = () => {
                 <Stack.Screen name="auth" options={{ headerShown: false }} />
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="chat" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="create-post"
+                  options={{
+                    headerShown: false,
+                    presentation: 'modal',
+                    fullScreenGestureEnabled: true,
+                    sheetGrabberVisible: true,
+                    sheetAllowedDetents: [0.8, 1],
+                  }}
+                />
               </Stack>
               <Toaster
                 position="bottom-center"
@@ -78,7 +88,7 @@ const RootLayout = () => {
                 }}
               />
             </AppSheetProvider>
-             <PortalHost />
+            <PortalHost />
             {/* </AppDrawer> */}
           </GestureHandlerRootView>
         </KeyboardProvider>

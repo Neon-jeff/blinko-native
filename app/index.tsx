@@ -5,6 +5,10 @@ import { useAuthStore } from '~/store/auth';
 const IndexScreen = () => {
   const { isAuthenticated, isOnboardingComplete } = useAuthStore();
   useLayoutEffect(() => {
+    // if(true){
+    //   router.replace('/auth/verify-email');
+    //   return;
+    // }
     if (isAuthenticated) {
       router.replace('/(tabs)/home');
       return;

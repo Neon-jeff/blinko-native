@@ -1,4 +1,4 @@
-import { ActivityIndicator, Platform, Pressable, View } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 import { SignUpFormData, signupSchema } from '~/schemas/forms';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -125,8 +125,8 @@ const SignUpForm = () => {
             Please enter your email and password to create an account.
           </Text> */}
         </View>
-        <View className="mt-10 gap-5 px-4 ">
-          <View className="flex-1 gap-2">
+        <View className="mt-10 gap-5 px-4  ">
+          <View className="gap-2">
             <FormInput
               name="email"
               control={form.control}
@@ -152,7 +152,7 @@ const SignUpForm = () => {
               </View>
             )}
           </View>
-          <View className="flex-1 gap-2">
+          <View className="flex- gap-2">
             <FormInput
               name="password"
               control={form.control}
@@ -160,7 +160,7 @@ const SignUpForm = () => {
               placeholder="*********"
               showMessage={false}
             />
-            <View className="flex-1 gap-1">
+            <View className=" gap-1">
               {passwordValidationObject.map((item, index) => (
                 <View key={index} className="flex-row items-center gap-1">
                   {<Check stroke={item.isValid ? 'green' : 'white'} size={15} />}

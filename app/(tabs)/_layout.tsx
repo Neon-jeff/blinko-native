@@ -66,7 +66,8 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="create-post"
         options={{
-          title: 'Create Post',
+          href:null
+         
         }}
       />
 

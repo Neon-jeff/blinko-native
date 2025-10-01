@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import React from 'react';
 import { useAuthStore } from '~/store/auth';
 import { Image } from 'expo-image';
@@ -15,14 +16,13 @@ import {
 } from 'iconsax-react-native';
 import { Text } from '~/components/ui/text';
 import { router } from 'expo-router';
-import { useAppSheet } from '~/components/providers/app-sheet';
 
 interface ProfileSheetContentProps {
     onLogout?: () => void;
 }
 
 const ProfileSheetContent = ({ onLogout }: ProfileSheetContentProps) => {
-  const { user, logout } = useAuthStore();
+  const { user, logout,isGuestUser } = useAuthStore();
   function handleProfilePress() {
     //
   }
@@ -91,6 +91,7 @@ const ProfileSheetContent = ({ onLogout }: ProfileSheetContentProps) => {
                 textDecorationColor: 'capitalize',
               }}
               className="font-semibold text-lg">
+                {isGuestUser && 'Guest User'}
               {user?.profile?.fullName}
             </Text>
             <Text className="text-sm text-gray-600">View Profile</Text>
@@ -105,14 +106,14 @@ const ProfileSheetContent = ({ onLogout }: ProfileSheetContentProps) => {
         <Pressable
           key={route.name}
           className="flex-row items-center gap-3 rounded-lg pb-1 hover:bg-gray-100">
-          <View className="rounded-full bg-gray-100 p-3">
+          <View className="rounded-full  p-3">
             <route.icon color="#374151" size={20} strokeWidth={2.2} variant="Bold" />
           </View>
           <Text className="font-medium text-base">{route.name}</Text>
         </Pressable>
       ))}
       <Pressable
-        className="flex-row items-center gap-3 rounded-lg border-t border-gray-100 pb-1 pt-4 hover:bg-gray-100"
+        className="flex-row items-center gap-3 rounded-lg "
         onPress={handleLogout}>
         <View className="rounded-full bg-red-100 p-3">
           <Logout color="red" size={20} strokeWidth={2.2} variant="Bold" />

@@ -5,7 +5,7 @@ import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useUpdateProfile } from '~/hooks/auth';
 import { useAuthStore } from '~/store/auth';

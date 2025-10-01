@@ -11,12 +11,12 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as NavigationBar from 'expo-navigation-bar';
 import { Logo } from '~/components/icons';
 import { useAuthStore } from '~/store/auth';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const OnboardingScreen = () => {
   async function handleNavigationBarTheme() {
     if (Platform.OS === 'android') {
-      await NavigationBar.setBackgroundColorAsync('black');
-      await NavigationBar.setButtonStyleAsync('light');
+      await NavigationBar.setVisibilityAsync('hidden');
     }
   }
   React.useEffect(() => {
@@ -61,6 +61,7 @@ const OnboardingScreen = () => {
       runOnJS(setCurrentIndex)(currentIndex - 1);
     }
   });
+  const {bottom} = useSafeAreaInsets()
   return (
     <GestureDetector gesture={gesture}>
       <View className="flex-1">
@@ -100,7 +101,7 @@ const OnboardingScreen = () => {
                 </Text>
               </View>
               <CarouselIndicator currentIndex={currentIndex} />
-              <View className='pb-10 gap-5'>
+              <View className='gap-5' style={{paddingBottom: Platform.OS === 'android' ? bottom + 20 : bottom}}>
                 <View className=" gap-5 ">
                   <Button
                     variant={'default'}

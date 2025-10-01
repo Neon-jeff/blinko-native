@@ -11,7 +11,6 @@ import { Text } from './text';
 import Animated, {
   FadeInLeft,
   FadeOutLeft,
-  FadeOutRight,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -19,7 +18,6 @@ import Animated, {
 import { Input } from './input';
 import { constants } from '~/constants';
 import { ActivityIndicator, View } from 'react-native';
-import { Dot } from 'lucide-react-native';
 
 interface FormInputProps<T extends FieldValues> {
   name: Path<T>;
@@ -71,8 +69,8 @@ const FormInput = <T extends FieldValues>({
       name={name}
       defaultValue={defaultValue}
       render={() => (
-        <Animated.View className="relative h-full flex-1 gap-2">
-          <View className="flex-row items-center gap-2">
+        <Animated.View className="relative">
+          <View className="flex-row items-center gap-2 pb-1">
             <AnimatedText className=" android:text-base ios:text-base font-semibold text-gray-700">
               {label}
             </AnimatedText>
@@ -88,17 +86,17 @@ const FormInput = <T extends FieldValues>({
             />
             {isLoading && (
               <View className="absolute right-5 top-1/2 -translate-y-1/2">
-                <ActivityIndicator color={'#000'} size={8} />
+                <ActivityIndicator color={'#000'} size={10} />
               </View>
             )}
           </View>
 
-          {fieldState.error && showMessage && (
+          {(fieldState.error && showMessage) && (
             <Animated.View
               entering={FadeInLeft.duration(200)}
               exiting={FadeOutLeft.duration(100)}
-              className=" flex-row items-center ">
-              <Dot color={'#c2410c'} size={30} />
+              className=" flex-row items-center  gap-2 pt-1  ">
+              <View className='w-1.5 h-1.5 bg-orange-700 rounded-full' />
               <Text className="text-sm  text-orange-700 ">{fieldState.error.message}</Text>
             </Animated.View>
           )}

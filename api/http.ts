@@ -13,9 +13,10 @@ export const http = ky.extend({
     beforeRequest: [
       (request) => {
         request.headers.set('x-api-key', env.API_KEY);
-        const {state:store} = JSON.parse(
+        const state= JSON.parse(
           local_store.getString('user-storage') || 'null'
         ) as {state:UserState | null};
+        const store = state?.state;
         if (store && store.user && store.user.tokens) {
           request.headers.set('Authorization', `Bearer ${store.user.tokens.accessToken}`);
         }

@@ -13,62 +13,77 @@ import Animated, {
 import { Input } from './input';
 import { constants } from '~/constants';
 import { cn } from '~/lib/utils';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 interface OTPInputProps {
   value: string;
-  onChangeText: (e: string) => void;
+  onChangeText: (text: string) => void;
 }
 
 const OTPInput = ({ value = '', onChangeText }: OTPInputProps) => {
-  const inputRef = React.useRef<TextInput>(null);
-
+  const inputRef = React.useRef<TextInput | null>(null);
   function checkIfNextActiveInput(index: number): boolean {
     const emptyInput = [0, 1, 2, 3, 4, 5].filter((i) => !value[i])[0];
     return emptyInput === index;
   }
   function handleFocus() {
-    inputRef.current?.focus();
+    if (inputRef.current) {
+      console.log('Focusing input');
+      inputRef.current.focus();
+    }
   }
   useEffect(() => {
-    if (value.length == 6) {
-      inputRef.current?.blur();
+    if (value.length === 6) {
       Keyboard.dismiss();
     }
   }, [value]);
   const styles = dynamicstyles();
   const AnimatedText = Animated.createAnimatedComponent(Text);
   return (
-    <View style={styles.otpContainer}>
-      {[...Array(6).keys()].map((_, index) => {
-        const styles = dynamicstyles(checkIfNextActiveInput(index));
-     
-        return (
-          <Pressable
-            key={index}
-            style={styles.otpInput}
-            className={cn(
-              'border-gray-300 border-b',
-              checkIfNextActiveInput(index) && 'border-b-2 border-gray-700',
-              value[index] && 'border-b-2 border-gray-700'
-            )}
-            onPress={handleFocus}>
-            {!value[index] && checkIfNextActiveInput(index) && <Indicator />}
-            {!value[index] && !checkIfNextActiveInput(index) && <StaleInput />}
-            {value[index] && <AnimatedText entering={checkIfNextActiveInput(index) ? FadeInDown.duration(500) : undefined}>{value[index]}</AnimatedText>}
-          </Pressable>
-        );
-      })}
-      <View style={styles.hidden}>
+    <KeyboardAvoidingView>
+      <View style={styles.otpContainer}>
+        {[...Array(6).keys()].map((_, index) => {
+          const styles = dynamicstyles(checkIfNextActiveInput(index));
+
+          return (
+            <Pressable
+              key={index}
+              style={styles.otpInput}
+              className={cn(
+                'rounded-lg border-gray-300 bg-gray-100',
+                checkIfNextActiveInput(index) && ''
+              )}
+              onPress={handleFocus}>
+              {!value[index] && checkIfNextActiveInput(index) && <Indicator />}
+              {!value[index] && !checkIfNextActiveInput(index) && <StaleInput />}
+              {value[index] && (
+                <AnimatedText
+                  entering={checkIfNextActiveInput(index) ? FadeInDown.duration(500) : undefined}>
+                  {value[index]}
+                </AnimatedText>
+              )}
+            </Pressable>
+          );
+        })}
+      </View>
+      <KeyboardAvoidingView style={{}}>
         <Input
-          ref={inputRef}
-          // value={value}
+          ref={(ref) => {
+            setTimeout(()=>{
+              inputRef.current = ref;
+            },100)
+          }}
+          onFocus={() => {
+            console.log('Focused in otp');
+          }}
+          // defaultValue=""
+          autoFocus
           onChangeText={onChangeText}
           maxLength={6}
-          autoFocus
           inputMode="numeric"
         />
-      </View>
-    </View>
+      </KeyboardAvoidingView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -98,7 +113,7 @@ function StaleInput() {
   return <View style={styles.staleInput} />;
 }
 
-const dynamicstyles = (isCursor?: boolean) =>
+const dynamicstyles = (isCursor?: boolean): ReturnType<typeof StyleSheet.create> =>
   StyleSheet.create({
     otpContainer: {
       flexDirection: 'row',
@@ -119,9 +134,9 @@ const dynamicstyles = (isCursor?: boolean) =>
     },
     hidden: {
       position: 'absolute',
-      top: 0,
+      top: 500,
       left: 0,
-      width: 0,
+      width: 200,
       height: 0,
       opacity: 0,
     },

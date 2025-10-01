@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { BottomSheetModal, BottomSheetRef } from './bottom-sheet';
 import { Image } from 'expo-image';
 import { ErrorIcon } from '~/assets/images';
 import { Button } from './button';
+import { Text } from './text';
 
 interface ErrorSheetProps {
   ref: React.RefObject<BottomSheetRef | null>;

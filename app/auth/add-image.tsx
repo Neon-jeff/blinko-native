@@ -43,8 +43,6 @@ const  handleSkip = () =>{
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
@@ -81,7 +79,7 @@ const  handleSkip = () =>{
         {/* Add your image upload component here */}
       </View>
       <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-center gap-5 border-t border-gray-100 bg-white px-8 py-5 pb-16">
-        <Button className="w-1/2" variant={'secondary'} >
+        <Button onPress={handleSkip} className="w-1/2" variant={'secondary'} >
           <Text className="native:text-base">Skip</Text>
         </Button>
         <Button className=" w-1/2" onPress={handleContinue} disabled={!image || uploadImage.isPending} loading={uploadImage.isPending}>

@@ -1,5 +1,7 @@
 import * as React from 'react';
 import {
+  BlurEvent,
+  FocusEvent,
   NativeSyntheticEvent,
   TextInput,
   TextInputFocusEventData,
@@ -27,14 +29,13 @@ const Input = React.forwardRef<React.ComponentRef<typeof TextInput>, InputProps>
     const focusProgress = useSharedValue(0);
     // check focused state of input to display validation feedback
     const borderColor = useSharedValue(constants.theme.blur);
-    const handlefocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    const handlefocus = (e: FocusEvent) => {
       if (!isInvalid) {
         borderColor.value = withTiming(constants.theme.focused, { duration: 200 });
-        return;
       }
       onFocus?.(e);
     }
-    const handleblur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    const handleblur = (e: BlurEvent) => {
       borderColor.value = withTiming(constants.theme.blur, { duration: 200 });
       onBlur?.(e);
     }

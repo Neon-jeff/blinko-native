@@ -1,8 +1,7 @@
-import { Pressable, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector,ScrollView } from 'react-native-gesture-handler';
 import Animated, {
-  runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
@@ -12,6 +11,7 @@ import Animated, {
 import { Portal } from '@rn-primitives/portal';
 import { sizes } from '~/constants/sizes';
 import { cn } from '~/lib/utils';
+import { scheduleOnRN } from 'react-native-worklets';
 
 /**
  * BottomSheetModal component that displays a bottom sheet with gesture handling.
@@ -69,12 +69,13 @@ const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
         duration: 300,
       });
     }
+    
     useAnimatedReaction(
       () => sheetTranslateY,
       (curr) => {
         if (curr.value === initialHeight + 300 && showSheet) {
           sheetHeight.value = withSpring(initialHeight);
-          runOnJS(setShowSheet)(false);
+          scheduleOnRN(setShowSheet,false);
           return;
         }
       }
@@ -165,7 +166,7 @@ BottomSheetTitle.displayName = 'BottomSheetTitle';
 
 function BottomSheetContent({ children, className }: SubProps) {
   return (
-    <ScrollView contentContainerStyle={styles.contentContainer}>
+      <ScrollView nestedScrollEnabled scrollEnabled contentContainerStyle={styles.contentContainer}>
       <View className={cn('flex-1', className)}>{children}</View>
     </ScrollView>
   );

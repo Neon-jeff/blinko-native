@@ -8,14 +8,13 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import TabIcon from './tabicon';
-import { AddIcon, HomeIcon, MarketIcon, MessageIcon, UsersIcon } from '../icons/tab-icons';
-import { SvgProps } from 'react-native-svg';
 import { cn } from '~/lib/utils';
 import { Text } from '../ui/text';
 import { sizes } from '~/constants/sizes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AddSquare, Home2, Home3, Message, Profile2User, Shop } from 'iconsax-react-native';
-import type { Icon, IconProps } from 'iconsax-react-native';
+import { AddSquare, Home2, Message, Profile2User, Shop } from 'iconsax-react-native';
+import type { IconProps } from 'iconsax-react-native';
+import { router } from 'expo-router';
 
 interface TabBarProps extends BottomTabBarProps {}
 
@@ -31,13 +30,20 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
   };
   const { bottom } = useSafeAreaInsets();
   const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+  const routes = [
+    ...state.routes.slice(0, 2).map((route) => ({ name: route.name, key: route.key })),
+    { name: 'create-post', key: null },
+    ...state.routes
+      .slice(2, state.routes.length)
+      .map((route) => ({ name: route.name, key: route.key })),
+  ];
   return (
     <View
-      className=" border-t border-gray-100 bg-white"
+      className=" border-t border-gray-100 bg-white pt-4"
       style={{
         paddingBottom: Platform.select({
           ios: bottom * 0.3,
-          android: bottom * 0.8,
+          android: bottom * 0.3,
         }),
       }}>
       <View
@@ -50,8 +56,9 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
             android: sizes.screen.height * 0.05,
           }),
         }}>
-        {state.routes.map((routeToScreen, index) => {
-          const isFocused = state.index === index;
+        {routes.map((routeToScreen, index) => {
+          const isFocused =
+            state.index === (index >= 2 ? (index === 2 ? false : index - 1) : index);
           const isCreatePost = routeToScreen.name === 'create-post';
           const scaleProgress = useSharedValue<number>(0);
           const styles = useAnimatedStyle(() => {
@@ -63,6 +70,10 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
 
           const handleNavigation = () => {
             if (isFocused) return;
+            if (routeToScreen.name === 'create-post') {
+              router.push('/create-post');
+              return;
+            }
             navigation.navigate(routeToScreen.name);
           };
 
@@ -82,10 +93,7 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
               onPress={handleNavigation}
               style={[styles]}>
               <View
-                className={cn(
-                  isCreatePost && 'bg-gray-100 p-2 px-4 rounded-xl ',
-                  'items-center '
-                )}>
+                className={cn(isCreatePost && 'rounded-xl bg-gray-100 p-2 px-4 ', 'items-center ')}>
                 <TabIcon
                   focused={isFocused}
                   Icon={icons[routeToScreen.name]}
