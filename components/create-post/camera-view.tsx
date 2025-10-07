@@ -14,7 +14,7 @@ import {
   Timer1,
   Watch,
 } from 'iconsax-react-native';
-import { Clock1, X } from 'lucide-react-native';
+import { X } from 'lucide-react-native';
 
 interface CameraWrapperProps {
   onCapture: (photo: string) => void;
@@ -59,7 +59,6 @@ export default function CameraWrapper({ onCapture, onClose }: CameraWrapperProps
   }
   return (
     <View className="z-10 flex-1" style={StyleSheet.absoluteFill}>
-      {!cameraReady && null}
       <CameraView
         style={StyleSheet.absoluteFill}
         onCameraReady={() => setTimeout(() => setCameraReady(true), 500)}

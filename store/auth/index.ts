@@ -15,7 +15,7 @@ export const useAuthStore = create<UserState & UserActions>()(
   persist(
     (set, get) => ({
       ...initialState,
-      login: (userData: User) => set({ user: userData, isAuthenticated: true }),
+      login: (userData: User) => set({ user: userData, isAuthenticated: true,isGuestUser: false }),
       logout: () => set({ user: null, isAuthenticated: false }),
       updateProfile: (profileData: Partial<User>) =>
         set((state) => ({

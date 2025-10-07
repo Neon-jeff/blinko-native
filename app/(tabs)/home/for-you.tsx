@@ -1,10 +1,36 @@
-import { View, ScrollView } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
+import { View, ScrollView, ActivityIndicator,FlatList } from 'react-native';
 import PostCard from '~/components/cards/posts';
+import { useFetchMyPosts } from '~/hooks/posts';
 
 const Home = () => {
+  const {data:posts,isLoading} = useFetchMyPosts()
+  if(isLoading){
+    return <ActivityIndicator size={32} color="gray" className='flex-1 justify-center mt-20 items-center' />
+  }
   return (
-    <View className=" px-0">
-      <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
+    <View className=" px-5 flex-1 bg-white">
+      <FlashList
+        data={posts?.data.docs || []}
+        renderItem={({ item }) => (
+          <PostCard
+            key={item._id}
+            title={item.description}
+            content={item.description}
+            date={new Date(item.createdAt).toLocaleDateString()}
+            creator={item.createdBy.fullName}
+            id={item._id}
+            images={item.postMedia.map((media) => media.url)}
+            likes={item.likes}
+          />
+        )}
+        keyExtractor={(item) => item._id}
+        showsVerticalScrollIndicator={false}
+        extraData={posts}
+        contentContainerStyle={{ gap: 20, paddingBottom: 150 }}
+        
+      />
+      {/* <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
         <View className="mt-4 px-3 ">
           <View className='gap-5 '>
             {
@@ -16,16 +42,16 @@ const Home = () => {
                   date="12-04-2023"
                   creator="Neon Koke"
                   images={[
-                    'https://images.pexels.com/photos/7466767/pexels-photo-7466767.jpeg',
-                    'https://images.pexels.com/photos/8157745/pexels-photo-8157745.jpeg',
-                    'https://images.pexels.com/photos/8157824/pexels-photo-8157824.jpeg',
+                    'https://images.pexels.com/photos/18064537/pexels-photo-18064537.jpeg',
+                    'https://images.pexels.com/photos/33827863/pexels-photo-33827863.jpeg',
+                    'https://images.pexels.com/photos/32832329/pexels-photo-32832329.jpeg',
                   ]}
                 />
               ))
             }
           </View>
         </View>
-      </ScrollView>
+      </ScrollView> */}
     
     </View>
   );

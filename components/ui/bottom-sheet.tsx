@@ -30,9 +30,10 @@ export interface BottomSheetRef {
 
 interface BottomSheetRootProps {
   children?: React.ReactNode;
+  height?: number;
 }
 const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
-  ({ children }, ref) => {
+  ({ children,height }, ref) => {
     const [showSheet, setShowSheet] = React.useState(false);
     useImperativeHandle(ref, () => {
       return {
@@ -59,7 +60,7 @@ const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
       }
     }, [showSheet]);
 
-    const initialHeight = sizes.screen.height * 0.5;
+    const initialHeight = height || sizes.screen.height * 0.5;
     const finalHeight = sizes.screen.height * 0.9;
     const sheetTranslateY = useSharedValue(initialHeight + 200);
     const sheetHeight = useSharedValue(initialHeight);
@@ -207,6 +208,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.7)',
     justifyContent: 'flex-end',
+    zIndex: 9999,
   },
   sheetContainer: {
     backgroundColor: 'white',
@@ -214,6 +216,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     paddingVertical: 10,
     overflow: 'hidden',
+    zIndex: 10000,
   },
   headerContainer: {
     padding: 12,

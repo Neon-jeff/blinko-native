@@ -6,8 +6,10 @@ import { sizes } from '~/constants/sizes';
 import Dots from '~/components/icons/Dots';
 import { HeartIcon, MessageCircle, PlusCircle, Send } from 'lucide-react-native';
 import { BlinkoCurrency } from '~/components/icons';
-import { Heart, Messages2 } from 'iconsax-react-native';
 import CustomImage from '~/components/ui/image';
+import { useLikePost, useUnlikePost } from '~/hooks/posts';
+import { useAuthStore } from '~/store/auth';
+import { Like } from '~/services/posts/types';
 
 interface PostCardProps {
   title: string;
@@ -15,9 +17,13 @@ interface PostCardProps {
   date: string;
   creator: string;
   images: string[];
+  id: string;
+  likes?: Like[];
 }
 
-const PostCard = ({ title, content, date, creator, images }: PostCardProps) => {
+const PostCard = ({ title, content, date, creator, images, id, likes }: PostCardProps) => {
+  const padding = 40;
+  const imageWidth = sizes.screen.width - padding;
   return (
     <View className="gap-2.5  border-b border-gray-50 bg-white  pb-6">
       <View className="flex-row items-center justify-between ">
@@ -48,9 +54,11 @@ const PostCard = ({ title, content, date, creator, images }: PostCardProps) => {
       <FlatList
         data={images}
         horizontal
+        style={{ width: sizes.screen.width }}
         renderItem={({ item }) => (
-          <View className="flex-1 w-full ">
+          <View className="flex-1" style={{ width: imageWidth }}>
             <CustomImage
+              className="w-full rounded-lg"
               source={item}
               // style={{
               //   width: sizes.screen.width * 0.4,
@@ -64,22 +72,52 @@ const PostCard = ({ title, content, date, creator, images }: PostCardProps) => {
         contentContainerStyle={{ gap: 2 }}
         showsHorizontalScrollIndicator={false}
         decelerationRate={-1}
-        snapToInterval={sizes.screen.width * .94}
+        snapToInterval={imageWidth}
       />
       <View className="mt-5 w-full flex-row items-center  justify-between">
         <Text className="text-sm text-gray-600">{date}</Text>
-        <PostInteractions />
+        <PostInteractions id={id} likes={likes} />
       </View>
     </View>
   );
 };
 
-function PostInteractions() {
+function PostInteractions({ id, likes }: { id: string; likes?: Like[] }) {
+  const likeMutation = useLikePost();
+  const unlikeMutation = useUnlikePost()
+  const { user } = useAuthStore();
+  const [isLiked, setIsLiked] = React.useState(
+    likes?.some((like) => like.fullName === user?.profile?.fullName) || false
+  );
+  const [likeCount, setLikeCount] = React.useState(likes?.length || 0);
+  
+  const handleLike = () => {
+    setIsLiked(true);
+    setLikeCount((prev) => prev + 1);
+    likeMutation.mutate(id, {
+      onError() {
+        setIsLiked(false);
+        setLikeCount((prev) => (prev > 0 ? prev - 1 : 0));
+      },
+    });
+  };
+
+  const handleUnlike = () => {
+    setIsLiked(false);
+    setLikeCount((prev) => (prev > 0 ? prev - 1 : 0));
+    unlikeMutation.mutate(id, {
+      onError() {
+        setIsLiked(true);
+        setLikeCount((prev) => prev + 1);
+      },
+    });
+  };
   const interactions = [
     {
-      icon: Heart,
+      icon: HeartIcon,
       label: 'Like',
-      count: 200,
+      count: likeCount,
+      action: !isLiked ? handleLike : handleUnlike,
     },
     {
       icon: MessageCircle,
@@ -97,12 +135,21 @@ function PostInteractions() {
       count: 10,
     },
   ];
+
   return (
     <View className="flex-1 flex-row justify-end gap-5">
       {interactions.map((interaction, index) => (
-        <Pressable key={index} className=" flex-row items-center gap-1.5">
+        <Pressable
+          onPress={interaction.action}
+          key={index}
+          className=" flex-row items-center gap-1.5">
           {/* {interaction.icon} */}
-          <interaction.icon size={25} color="#989898" strokeWidth={1.7} />
+          <interaction.icon
+            fill={interaction.label === 'Like' ? (isLiked ? 'red' : '#fff') : '#fff'}
+            color={interaction.label === 'Like' ? (isLiked ? 'red' : '#989898') : '#989898'}
+            size={25}
+            strokeWidth={1.7}
+          />
           <Text className="text-xs text-gray-500">{interaction.count}</Text>
         </Pressable>
       ))}

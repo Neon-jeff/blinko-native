@@ -152,7 +152,7 @@ export class PostService {
 
   async likePost(id: string) {
     try {
-      return http.post<ApiResponse<null>>(this.routes.posts.like_post(id)).json();
+      return http.put<ApiResponse<null>>(this.routes.posts.like_post(id)).json();
     } catch (error) {
       console.log('Error liking post:', error);
       throw error;
@@ -161,7 +161,7 @@ export class PostService {
 
   async unlikePost(id: string) {
     try {
-      return http.post<ApiResponse<null>>(this.routes.posts.unlike_post(id)).json();
+      return http.put<ApiResponse<null>>(this.routes.posts.unlike_post(id)).json();
     } catch (error) {
       console.log('Error unliking post:', error);
       throw error;

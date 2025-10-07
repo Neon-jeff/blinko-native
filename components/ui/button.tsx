@@ -86,6 +86,7 @@ function Button({
         )}
         ref={ref}
         role="button"
+        disabled={loading || props.disabled}
         {...props}>
         {loading && <ActivityIndicator color={variant === 'default' ? 'white' : 'black'} />}
         {!loading && children && <>{children}</>}

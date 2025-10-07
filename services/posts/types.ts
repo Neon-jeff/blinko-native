@@ -20,15 +20,17 @@ export type EditPostBody = Partial<CreateCommentBody>;
 
 export interface CreatePostBody {
   description: string;
-  media?: Media[];
+  postMedia?: Media[];
+  visibility?: string;
+  isPremium?: boolean;
 }
 
 export interface CreatePostResponse {
   description: string;
   visibility: string;
   isPremium: boolean;
-  postMedia: any[];
-  likes: any[];
+  postMedia: PostMedia[];
+  likes: Like[];
   createdBy: string;
   _id: string;
   createdAt: string;
@@ -54,7 +56,7 @@ export interface PostDoc {
   visibility: string
   isPremium: boolean
   postMedia: PostMedia[]
-  likes: any[]
+  likes: Like[]
   createdBy: CreatedBy
   __v: number
   createdAt: string
@@ -80,7 +82,7 @@ export interface Comment {
   post: string
   parentComment: any
   media: Media[]
-  likes: any[]
+  likes: Like[]
   createdAt: string
   updatedAt: string
   __v: number
@@ -96,4 +98,10 @@ export interface Media {
 export interface fetchParams{
     page: number;
     limit: number;
+}
+
+export interface Like {
+  _id: string
+  displayPhoto: Media | null
+  fullName: string
 }

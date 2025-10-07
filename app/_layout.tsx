@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SplashScreen, Stack } from 'expo-router';
 import {
@@ -17,6 +17,8 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { PortalHost } from '@rn-primitives/portal';
 import ReactQueryClientProvider from '~/components/query-client';
 import { AppSheetProvider } from '~/components/providers/app-sheet';
+import { FullWindowOverlay } from "react-native-screens"
+import { Platform } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 const RootLayout = () => {
@@ -39,6 +41,7 @@ const RootLayout = () => {
   if (!loaded) {
     return null;
   }
+  const WindowOverlay = Platform.OS === "ios" ? FullWindowOverlay : Fragment
   return (
     <React.Fragment>
       <ReactQueryClientProvider>
@@ -62,9 +65,10 @@ const RootLayout = () => {
                   options={{
                     headerShown: false,
                     presentation: 'modal',
-                    fullScreenGestureEnabled: true,
+                    fullScreenGestureEnabled: false,
                     sheetGrabberVisible: true,
                     sheetAllowedDetents: [0.8, 1],
+                    gestureEnabled: false,
                   }}
                 />
               </Stack>
@@ -88,7 +92,7 @@ const RootLayout = () => {
                 }}
               />
             </AppSheetProvider>
-            <PortalHost />
+            <WindowOverlay><PortalHost/></WindowOverlay>
             {/* </AppDrawer> */}
           </GestureHandlerRootView>
         </KeyboardProvider>
