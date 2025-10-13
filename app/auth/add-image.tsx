@@ -49,7 +49,7 @@ const  handleSkip = () =>{
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="gap-10 bg-white px-5 ">
+    <SafeAreaView style={{ flex: 1 }} className="gap-10 bg-white px-5 pb-10 ">
       <Logo variant="text" />
       <View className=" flex-1 justify-center">
         <View className="absolute left-0 right-0 top-0 flex-col mt-10   justify-center gap-2 pt-5">

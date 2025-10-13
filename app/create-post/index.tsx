@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Screen from '~/components/ui/screen';
 import { Text } from '~/components/ui/text';
 import { useAuthStore } from '~/store/auth';
-import { ProfileImage } from '~/components/shared';
+import { UserProfileImage } from '~/components/shared';
 import { Input } from '~/components/ui/input';
 import React from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -118,7 +118,7 @@ const CreatePost = () => {
       {/* layout view */}
       <View className="px-5  pt-6">
         <View className="flex-row gap-4">
-          <ProfileImage className="h-12 w-12" />
+          <UserProfileImage className="h-12 w-12" />
           <View className="flex-1 ">
             <Text className="font-semibold text-lg">{user?.profile?.fullName}</Text>
             <Text className="text-gray-500"> @username</Text>

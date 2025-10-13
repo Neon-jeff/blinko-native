@@ -96,7 +96,7 @@ const SelectInterest = () => {
     );
   }
   return (
-    <SafeAreaView className="relative flex-1 gap-10  px-5  ">
+    <SafeAreaView className="relative flex-1 gap-10  px-5 pb-10  ">
       <Logo variant="text"  />
       <ScrollView
         showsVerticalScrollIndicator={false}

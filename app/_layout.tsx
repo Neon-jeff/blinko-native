@@ -19,6 +19,7 @@ import ReactQueryClientProvider from '~/components/query-client';
 import { AppSheetProvider } from '~/components/providers/app-sheet';
 import { FullWindowOverlay } from "react-native-screens"
 import { Platform } from 'react-native';
+import { SocketProvider } from '~/components/providers/socket-client';
 
 SplashScreen.preventAutoHideAsync();
 const RootLayout = () => {
@@ -44,10 +45,11 @@ const RootLayout = () => {
   const WindowOverlay = Platform.OS === "ios" ? FullWindowOverlay : Fragment
   return (
     <React.Fragment>
+      <KeyboardProvider>
       <ReactQueryClientProvider>
-        <KeyboardProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <AppSheetProvider>
+          <SocketProvider>
+               <AppSheetProvider>
               <Stack
                 screenOptions={{
                   contentStyle: {
@@ -77,26 +79,30 @@ const RootLayout = () => {
                 toastOptions={{
                   style: {
                     backgroundColor: 'white',
-                    borderRadius: 8,
-                    padding: 20,
+                    borderRadius: 1000,
+                    padding: 12,
                     shadowOpacity: 0.01,
                   },
                   titleStyle: {
                     fontFamily: 'medium',
                     color: 'black',
+                    fontSize: 14,
                   },
                   descriptionStyle: {
                     fontFamily: 'regular',
                     color: 'gray',
+                    fontSize: 10
                   },
                 }}
+                
               />
             </AppSheetProvider>
+          </SocketProvider>
             <WindowOverlay><PortalHost/></WindowOverlay>
             {/* </AppDrawer> */}
           </GestureHandlerRootView>
-        </KeyboardProvider>
       </ReactQueryClientProvider>
+      </KeyboardProvider>
     </React.Fragment>
   );
 };

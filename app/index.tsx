@@ -1,14 +1,14 @@
 import { Redirect, router } from 'expo-router';
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useAuthStore } from '~/store/auth';
 
 const IndexScreen = () => {
   const { isAuthenticated, isOnboardingComplete } = useAuthStore();
-  useLayoutEffect(() => {
-    // if(true){
-    //   router.replace('/auth/verify-email');
-    //   return;
-    // }
+  useEffect(() => {
+    if(true){
+      router.replace('/auth/location');
+      return;
+    }
     if (isAuthenticated) {
       router.replace('/(tabs)/home');
       return;

@@ -62,6 +62,7 @@ export interface PostDoc {
   createdAt: string
   updatedAt: string
   topComments: Comment[]
+  commentCount: number
 }
 
 export interface PostMedia {
@@ -73,6 +74,19 @@ export interface PostMedia {
 export interface CreatedBy {
   _id: string
   fullName: string
+  displayPhoto: Media | null
+}
+
+export interface CommentsResponse {
+  docs: Comment[]
+  page: number
+  limit: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+  nextPage: any
+  previousPage: any
+  totalDocs: number
+  totalPages: number
 }
 
 export interface Comment {
@@ -81,8 +95,8 @@ export interface Comment {
   createdBy: CreatedBy
   post: string
   parentComment: any
-  media: Media[]
-  likes: Like[]
+  media: any[]
+  likes: any[]
   createdAt: string
   updatedAt: string
   __v: number
@@ -104,4 +118,34 @@ export interface Like {
   _id: string
   displayPhoto: Media | null
   fullName: string
+}
+
+export interface PaginationParams {
+  page: number
+  limit: number
+}
+
+export interface ReplyResponse {
+  docs: Reply[]
+  page: number
+  limit: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+  nextPage: any
+  previousPage: any
+  totalDocs: number
+  totalPages: number
+}
+
+export interface Reply {
+  _id: string
+  content: string
+  createdBy: CreatedBy
+  post: string
+  parentComment: string
+  media: any[]
+  likes: any[]
+  createdAt: string
+  updatedAt: string
+  __v: number
 }

@@ -5,6 +5,7 @@ export type UserState = {
     isAuthenticated: boolean;
     isOnboardingComplete: boolean;
     isGuestUser: boolean;
+    rehydrated: boolean;
 }
 export type UserActions = {
     login: (userData: User) => void;

@@ -31,10 +31,10 @@ const VerifyEmail = () => {
   const resendCode = useResendVerificationEmail();
   const { user,logout } = useAuthStore();
   React.useEffect(() => {
-    if(!user){
-      router.replace('/auth/signup');
-      return;
-    }
+    // if(!user){
+    //   router.replace('/auth/signup');
+    //   return;
+    // }
     const interval = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 1) {
@@ -76,7 +76,7 @@ const VerifyEmail = () => {
     });
   };
   return (
-    <Screen className=" gap-10 px-5">
+    <Screen className=" gap-10 px-5 pb-10">
       <Logo variant="text" />
       <View className="items-center gap-2 ">
         <Animated.View className="items-center rounded-full p-3" entering={ZoomIn.duration(700)}>

@@ -12,6 +12,7 @@ import { Portal } from '@rn-primitives/portal';
 import { sizes } from '~/constants/sizes';
 import { cn } from '~/lib/utils';
 import { scheduleOnRN } from 'react-native-worklets';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 /**
  * BottomSheetModal component that displays a bottom sheet with gesture handling.
@@ -31,9 +32,10 @@ export interface BottomSheetRef {
 interface BottomSheetRootProps {
   children?: React.ReactNode;
   height?: number;
+  className?: string;
 }
 const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
-  ({ children,height }, ref) => {
+  ({ children,height,className }, ref) => {
     const [showSheet, setShowSheet] = React.useState(false);
     useImperativeHandle(ref, () => {
       return {
@@ -116,6 +118,8 @@ const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
           event.translationY < 0 &&
           sheetHeight.value < finalHeight
         ) {
+          console.log('resetting to initial height',initialHeight);
+          sheetTranslateY.value = withTiming(0);
           sheetHeight.value = withSpring(initialHeight);
           return;
         }
@@ -140,14 +144,14 @@ const BottomSheetModalRoot = forwardRef<BottomSheetRef, BottomSheetRootProps>(
     }
     return (
       <Portal name="bottom-sheet-modal">
-        <Pressable style={[styles.overlayContainer]} onPress={handleCloseSheet}>
+        <View style={[styles.overlayContainer]} >
           <GestureDetector gesture={gesture}>
-            <Animated.View className="gap-5" style={[styles.sheetContainer, animatedRootStyle]}>
+            <Animated.View className={cn("gap-5",className)} style={[styles.sheetContainer, animatedRootStyle]}>
               <View className='h-1.5 w-1/6 bg-gray-300 rounded-full self-center'/>
               {children}
             </Animated.View>
           </GestureDetector>
-        </Pressable>
+        </View>
       </Portal>
     );
   }
@@ -165,11 +169,11 @@ function BottomSheetTitle({ children }: SubProps) {
 }
 BottomSheetTitle.displayName = 'BottomSheetTitle';
 
-function BottomSheetContent({ children, className }: SubProps) {
+function BottomSheetContent({ children, className,scrollEnabled = true }: SubProps & {shouldWrapScroll?:boolean,scrollEnabled?:boolean}) {
   return (
-      <ScrollView nestedScrollEnabled scrollEnabled contentContainerStyle={styles.contentContainer}>
+      <KeyboardAwareScrollView keyboardShouldPersistTaps="always"  nestedScrollEnabled scrollEnabled={scrollEnabled} contentContainerStyle={styles.contentContainer}>
       <View className={cn('flex-1', className)}>{children}</View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 

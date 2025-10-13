@@ -1,6 +1,4 @@
 import { Pressable, View } from 'react-native';
-import React from 'react';
-import { Text } from '~/components/ui/text';
 import { Input } from '~/components/ui/input';
 import {  Send2 } from 'iconsax-react-native';
 import { BlinkoCurrency } from '~/components/icons';

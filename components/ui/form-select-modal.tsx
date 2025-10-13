@@ -23,6 +23,7 @@ import { Calendar1 } from 'iconsax-react-native';
 import { Dot } from 'lucide-react-native';
 import { BottomSheetModal, BottomSheetRef } from './bottom-sheet';
 import { FlashList } from '@shopify/flash-list';
+import { Input } from './input';
 
 interface FormSelectProps<T extends FieldValues,K> {
   name: Path<T>;
@@ -34,6 +35,9 @@ interface FormSelectProps<T extends FieldValues,K> {
   RenderItem: ({ item, selected }: { item: K; selected?: boolean }) => React.ReactNode;
   placeholder?: string;
   disabled?: boolean;
+  onSearchChange?: (text: string) => void;
+  searchPlaceholder?: string;
+  showSearch?: boolean;
 }
 
 const FormSelectModal = <T extends FieldValues, K>({
@@ -46,6 +50,9 @@ const FormSelectModal = <T extends FieldValues, K>({
   RenderItem,
   placeholder = 'Select',
   disabled = false,
+  onSearchChange,
+  searchPlaceholder,
+  showSearch = false,
 }: FormSelectProps<T, K>) => {
   const textcolor = useSharedValue(constants.theme.label.blur);
   const animatedTextStyle = useAnimatedStyle(() => ({
@@ -80,12 +87,12 @@ const FormSelectModal = <T extends FieldValues, K>({
           </TouchableOpacity>
 
           <BottomSheetModal.Root ref={modalRef}>
-            <BottomSheetModal.Content className="px-2 pt-5">
+            <BottomSheetModal.Content className="px-2 pt-5 gap-4">
+              <Input placeholder='Search Country' onChangeText={onSearchChange} containerClassName='overflow-hidden' className='bg-gray-50'/>
               <FlashList
                 data={data}
                 extraData={{selected: field.value}}
                 renderItem={({ item }) => <RenderItem item={item} />}
-                estimatedItemSize={40}
                 keyExtractor={(_, index) => index.toString() + label}
               />
             </BottomSheetModal.Content>

@@ -3,7 +3,7 @@ import { LocationForm } from '~/components/forms'
 
 const Location = () => {
   return (
-    <Screen>
+    <Screen className='pb-10'>
         <LocationForm />
     </Screen>
   )

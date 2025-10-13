@@ -66,7 +66,7 @@ const OTPInput = ({ value = '', onChangeText }: OTPInputProps) => {
           );
         })}
       </View>
-      <KeyboardAvoidingView style={{}}>
+      <KeyboardAvoidingView style={styles.hidden}>
         <Input
           ref={(ref) => {
             setTimeout(()=>{

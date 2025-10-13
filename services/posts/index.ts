@@ -1,14 +1,18 @@
 import { ApiResponse, http } from '~/api';
 import {
   Comment,
+  CommentsResponse,
   CreateCommentBody,
   CreatePostBody,
   CreatePostResponse,
   EditCommentBody,
   fetchParams,
   FetchPostResponse,
+  PaginationParams,
   ReplyCommentBody,
+  ReplyResponse,
 } from './types';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export class PostService {
   private routes = {
@@ -27,6 +31,12 @@ export class PostService {
       unlike_comment(id: string) {
         return `comments/${id}/unlike`;
       },
+      get_post_comments(postId: string) {
+        return `comments/${postId}`;
+      },
+      get_comments_replies(commentId: string) {
+        return `comments/replies/${commentId}`;
+      }
     },
     posts: {
       create_post: 'posts',
@@ -34,7 +44,7 @@ export class PostService {
       get_post(id: string) {
         return `posts/${id}`;
       },
-      post_feed: 'posts/feed',
+      post_feed: 'posts/feed?_populate=createdBy',
       get_trending: 'posts/trending',
       get_following_posts: 'posts/following',
       delete_post(id: string) {
@@ -233,4 +243,32 @@ export class PostService {
       throw error;
     }
   }
+  async getPostComments(params: { postId: string } & PaginationParams) {
+    const { postId, ...searchParams } = params;
+    try {
+      return http
+        .get<ApiResponse<CommentsResponse>>(this.routes.comments.get_post_comments(postId), {
+          searchParams,
+        })
+        .json();
+    } catch (error) {
+      console.log('Error fetching comments for post:', error);
+      throw error;
+    }
+  }
+
+  async getCommentReplies(params: { commentId: string } & PaginationParams) {
+    const { commentId, ...searchParams } = params;
+    try {
+      return http
+        .get<ApiResponse<ReplyResponse>>(this.routes.comments.get_comments_replies(commentId), {
+          searchParams,
+        })
+        .json();
+    } catch (error) {
+      console.log('Error fetching replies for comment:', error);
+      throw error;
+    }
+  }
+  
 }

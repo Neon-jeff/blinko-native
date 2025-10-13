@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { PostService } from "~/services/posts";
-import { CreateCommentBody, CreatePostBody, EditCommentBody, ReplyCommentBody } from "~/services/posts/types";
+import { CreateCommentBody, CreatePostBody, EditCommentBody, PaginationParams, ReplyCommentBody } from "~/services/posts/types";
 
 const postService = new PostService();
 
@@ -20,7 +20,8 @@ export function useFetchPostsFeed(){
 export function useFetchMyPosts(){
     return useQuery({
         queryKey:['my-posts'],
-        queryFn:()=> postService.fetchMyPosts()
+        queryFn:()=> postService.fetchMyPosts(),
+        refetchOnMount:true
     })
 }
 
@@ -84,5 +85,23 @@ export function useDeleteComment(){
 export function useReplyComment(){
     return useMutation({
         mutationFn:(data:ReplyCommentBody)=> postService.replyToComment(data)
+    })
+}
+
+export function useGetPostComments(params:{ postId:string} & PaginationParams){
+    
+    return useQuery({
+        queryKey:['post-comments',params.postId],
+        queryFn:()=> postService.getPostComments(params),
+        enabled:!!params.postId
+    })
+}
+
+
+export function useGetCommentReplies(params:{ commentId:string} & PaginationParams){
+    return useQuery({
+        queryKey:['comment-replies',params.commentId],
+        queryFn:()=> postService.getCommentReplies(params),
+        enabled:!!params.commentId
     })
 }

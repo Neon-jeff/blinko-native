@@ -1,10 +1,10 @@
 import { FlashList } from '@shopify/flash-list';
 import { View, ScrollView, ActivityIndicator,FlatList } from 'react-native';
 import PostCard from '~/components/cards/posts';
-import { useFetchMyPosts } from '~/hooks/posts';
+import { useFetchMyPosts, useFetchPostsFeed } from '~/hooks/posts';
 
 const Home = () => {
-  const {data:posts,isLoading} = useFetchMyPosts()
+  const {data:posts,isLoading} = useFetchPostsFeed()
   if(isLoading){
     return <ActivityIndicator size={32} color="gray" className='flex-1 justify-center mt-20 items-center' />
   }
@@ -22,6 +22,7 @@ const Home = () => {
             id={item._id}
             images={item.postMedia.map((media) => media.url)}
             likes={item.likes}
+            commentCount={item.commentCount}
           />
         )}
         keyExtractor={(item) => item._id}

@@ -71,8 +71,8 @@ const LocationForm = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="mt-10 flex-1">
-        <View className="items-center  gap-2 self-center">
-          <Image source={Location} style={{ width: 200, height: 200 }} />
+        <View className="items-center  gap-2 self-center ">
+          <Image source={Location} style={{ width: 200, height: 200 }} contentFit='cover' />
           <Text className=" android:text-3xl px-10 text-center  font-semibold text-2xl text-black">
             Enter your location details
           </Text>

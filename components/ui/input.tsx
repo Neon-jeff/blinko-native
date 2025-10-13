@@ -68,7 +68,7 @@ const Input = React.forwardRef<React.ComponentRef<typeof TextInput>, InputProps>
     }
     return (
       <Animated.View
-        className={cn("relative flex-row gap-1 bg-gray-100/80 border border-gray-200/80 justify-center rounded-xl  ", containerClassName)}
+        className={cn("relative flex-row gap-1 bg-gray-100/80 border border-gray-200/80 justify-center rounded-xl ", containerClassName)}
      >
           {
             Icon && <View className='w-8 items-start justify-center pl-2'>{Icon}</View>

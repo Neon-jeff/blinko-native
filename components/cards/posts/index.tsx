@@ -9,7 +9,11 @@ import { BlinkoCurrency } from '~/components/icons';
 import CustomImage from '~/components/ui/image';
 import { useLikePost, useUnlikePost } from '~/hooks/posts';
 import { useAuthStore } from '~/store/auth';
-import { Like } from '~/services/posts/types';
+import { Comment, Like } from '~/services/posts/types';
+import { BottomSheetRef } from '~/components/ui/bottom-sheet';
+import Comments from './comments';
+import { Heart, Message } from 'iconsax-react-native';
+import { cn } from '~/lib/utils';
 
 interface PostCardProps {
   title: string;
@@ -19,11 +23,22 @@ interface PostCardProps {
   images: string[];
   id: string;
   likes?: Like[];
+  commentCount: number;
 }
 
-const PostCard = ({ title, content, date, creator, images, id, likes }: PostCardProps) => {
+const PostCard = ({
+  title,
+  content,
+  date,
+  creator,
+  images,
+  id,
+  likes,
+  commentCount,
+}: PostCardProps) => {
   const padding = 40;
   const imageWidth = sizes.screen.width - padding;
+  const sheetRef = React.useRef<BottomSheetRef>(null);
   return (
     <View className="gap-2.5  border-b border-gray-50 bg-white  pb-6">
       <View className="flex-row items-center justify-between ">
@@ -76,21 +91,32 @@ const PostCard = ({ title, content, date, creator, images, id, likes }: PostCard
       />
       <View className="mt-5 w-full flex-row items-center  justify-between">
         <Text className="text-sm text-gray-600">{date}</Text>
-        <PostInteractions id={id} likes={likes} />
+        <PostInteractions id={id} likes={likes} commentRef={sheetRef} commentsCount={commentCount} />
       </View>
+    <Comments ref={sheetRef} postId={id} />
     </View>
   );
 };
 
-function PostInteractions({ id, likes }: { id: string; likes?: Like[] }) {
+function PostInteractions({
+  id,
+  likes,
+  commentRef,
+  commentsCount
+}: {
+  id: string;
+  likes?: Like[];
+  commentRef: React.RefObject<BottomSheetRef | null>;
+  commentsCount: number
+}) {
   const likeMutation = useLikePost();
-  const unlikeMutation = useUnlikePost()
+  const unlikeMutation = useUnlikePost();
   const { user } = useAuthStore();
   const [isLiked, setIsLiked] = React.useState(
     likes?.some((like) => like.fullName === user?.profile?.fullName) || false
   );
   const [likeCount, setLikeCount] = React.useState(likes?.length || 0);
-  
+
   const handleLike = () => {
     setIsLiked(true);
     setLikeCount((prev) => prev + 1);
@@ -112,17 +138,21 @@ function PostInteractions({ id, likes }: { id: string; likes?: Like[] }) {
       },
     });
   };
+  const handleOpenComments = () => {
+    commentRef.current?.open();
+  };
   const interactions = [
     {
-      icon: HeartIcon,
+      icon: Heart,
       label: 'Like',
       count: likeCount,
       action: !isLiked ? handleLike : handleUnlike,
     },
     {
-      icon: MessageCircle,
+      icon: Message,
       label: 'Comment',
-      count: 50,
+      count: commentsCount,
+      action: handleOpenComments,
     },
     {
       icon: BlinkoCurrency,
@@ -136,6 +166,13 @@ function PostInteractions({ id, likes }: { id: string; likes?: Like[] }) {
     },
   ];
 
+  function interactionLabelStyles(label: string) {
+    if (label === 'Like' && isLiked) {
+      return 'text-red-500';
+    }
+    return 'text-gray-500';
+  } 
+
   return (
     <View className="flex-1 flex-row justify-end gap-5">
       {interactions.map((interaction, index) => (
@@ -147,10 +184,11 @@ function PostInteractions({ id, likes }: { id: string; likes?: Like[] }) {
           <interaction.icon
             fill={interaction.label === 'Like' ? (isLiked ? 'red' : '#fff') : '#fff'}
             color={interaction.label === 'Like' ? (isLiked ? 'red' : '#989898') : '#989898'}
-            size={25}
-            strokeWidth={1.7}
+            size={22}
+            variant={interaction.label === 'Like' ? (isLiked ? 'Bold' : 'Linear') : 'Linear'}
+            strokeWidth={1.5}
           />
-          <Text className="text-xs text-gray-500">{interaction.count}</Text>
+          <Text className={cn("text-sm text-gray-500 font-semibold",interactionLabelStyles(interaction.label))}>{interaction.count}</Text>
         </Pressable>
       ))}
     </View>

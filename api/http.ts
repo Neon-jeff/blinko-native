@@ -24,12 +24,12 @@ export const http = ky.extend({
     ],
     afterResponse: [
       async (_input, _option, response) => {
-        // if (response.status == 401) {
-        //   useAuthStore.getState().logout();
-        //   router.replace('/auth/login');
-        //   toast.error('Session expired, please log in again');
-        //   return;
-        // }
+        if (response.status == 401 && useAuthStore.getState().isAuthenticated) {
+          useAuthStore.getState().logout();
+          router.replace('/auth/login');
+          toast.error('Session expired, please log in again');
+          return;
+        }
         if (!response.ok) {
           const responseData = await response.json();
           throw new APIError('API request failed', responseData as any);
