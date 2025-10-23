@@ -1,11 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import Screen from '~/components/ui/screen'
 
 const Groups = () => {
   return (
-    <View>
+    <Screen>
       <Text>Groups</Text>
-    </View>
+    </Screen>
   )
 }
 

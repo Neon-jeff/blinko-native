@@ -42,7 +42,7 @@ const SignUpForm = () => {
           // call the create account endpoint.
           createAccount.mutate(
             {
-              email: data.email,
+              email: data.email.toLowerCase(),
               username: data.email + 'not-set',
               password: data.password,
               dateOfBirth: '2000-01-01',

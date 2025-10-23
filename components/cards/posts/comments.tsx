@@ -7,15 +7,13 @@ import { sizes } from '~/constants/sizes';
 import CommentsKeyboard from './comments-keyboard';
 import { ProfileImage } from '~/components/shared';
 import { FlashList, FlashListRef } from '@shopify/flash-list';
-import { useDeleteComment, useGetCommentReplies, useGetPostComments } from '~/hooks/posts';
+import { useDeleteComment, useGetCommentReplies, useGetPostComments, useLikeComment, useUnlikeComment } from '~/hooks/posts';
 import { Heart } from 'iconsax-react-native';
-import { ThumbsUp } from 'lucide-react-native';
 import { formDate } from '~/utils/date';
-import { ContextMenu, ContextMenuContent, ContextMenuItem } from '~/components/ui/context-menu';
 import * as Haptics from 'expo-haptics';
-import { Popover, PopoverContent } from '~/components/ui/popover';
 import { useAuthStore } from '~/store/auth';
 import { toast } from 'sonner-native';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CommentsProps {
   ref: React.RefObject<BottomSheetRef | null>;
@@ -54,7 +52,7 @@ const Comments = ({ ref, postId }: CommentsProps) => {
       </Text>
       <BottomSheetModal.Content scrollEnabled={false}>
         <FlashList
-          data={commentsData?.data?.docs || []}
+          data={commentsData?.data?.docs.filter((doc) => doc.parentComment == null) || []}
           renderItem={({ item, index }) => (
             <CommentItem comment={item} onPress={() => handleCommentPress(item, index)} />
           )}
@@ -84,7 +82,18 @@ const Comments = ({ ref, postId }: CommentsProps) => {
 function CommentItem({ comment, onPress }: { comment: Comment; onPress: () => void }) {
   const { content, _id } = comment;
   const { user } = useAuthStore();
-  const {refetch:refetchComments} = useGetPostComments({postId:comment.post,page:1,limit:20})
+  const likeMutation = useLikeComment();
+  const unlikeMutation = useUnlikeComment();
+  const [isLiked, setIsLiked] = React.useState(
+    comment.likes?.some((like) => like.fullName === user?.profile?.fullName) || false
+  );
+  const [likeCount, setLikeCount] = React.useState(comment.likes?.length || 0);
+  const queryClient = useQueryClient();
+  const { refetch: refetchComments } = useGetPostComments({
+    postId: comment.post,
+    page: 1,
+    limit: 20,
+  });
   const { data: repliesData, refetch: refetchReplies } = useGetCommentReplies({
     commentId: _id,
     page: 1,
@@ -93,14 +102,45 @@ function CommentItem({ comment, onPress }: { comment: Comment; onPress: () => vo
   const [showReplies, setShowReplies] = React.useState(false);
   const [showContextMenu, setShowContextMenu] = React.useState(false);
   const sheetRef = React.useRef<BottomSheetRef | null>(null);
-  const deleteCommentMutation = useDeleteComment()
+  const deleteCommentMutation = useDeleteComment();
+
+  const handleLike = () => {
+    setIsLiked(true);
+    setLikeCount((prev) => prev + 1);
+    likeMutation.mutate(comment._id, {
+      onError() {
+        setIsLiked(false);
+        setLikeCount((prev) => (prev > 0 ? prev - 1 : 0));
+      },
+    });
+  };
+
+  const handleUnlike = () => {
+    setIsLiked(false);
+    setLikeCount((prev) => (prev > 0 ? prev - 1 : 0));
+    unlikeMutation.mutate(comment._id, {
+      onError() {
+        setIsLiked(true);
+        setLikeCount((prev) => prev + 1);
+      },
+    });
+  };
 
   function handleDeleteComment() {
     deleteCommentMutation.mutate(comment._id, {
       onSuccess() {
         toast.success('Comment deleted');
         refetchComments();
-      }
+      },
+    });
+  }
+
+    function handleDeleteReply(replyID: string) {
+    deleteCommentMutation.mutate(replyID, {
+      onSuccess() {
+        toast.success('Reply deleted');
+        refetchReplies();
+      },
     });
   }
 
@@ -151,9 +191,9 @@ function CommentItem({ comment, onPress }: { comment: Comment; onPress: () => vo
             </View>
           </View>
         </View>
-        <Pressable className="items-center gap-2 pr-4">
-          <Heart size={20} color="#6b7280" />
-          <Text className="text-gray-500">{comment.likes?.length || 0}</Text>
+        <Pressable className="items-center gap-2 pr-4" onPress={isLiked ? handleUnlike : handleLike} disabled={!user || likeMutation.isPending || unlikeMutation.isPending}>
+          <Heart size={20} color={isLiked ? '#EF4444' : '#6b7280'} variant={isLiked ? 'Bold' : 'Outline'} />
+          <Text className="text-gray-500">{likeCount}</Text>
         </Pressable>
       </Pressable>
       {/* comment replies */}
@@ -173,10 +213,14 @@ function CommentItem({ comment, onPress }: { comment: Comment; onPress: () => vo
                   <Text className="text-sm text-gray-600">{item.content}</Text>
                   <View className="flex-row items-center gap-5 pt-2">
                     <Text className="text-sm text-gray-500">{formDate(item.createdAt)}</Text>
-                    {/* <Text className="font-semibold text-sm text-gray-700">
-                    {repliesData?.data?.docs?.length || 0}{' '}
-                    {repliesData?.data?.docs?.length === 1 ? 'Reply' : 'Replies'}
-                  </Text> */}
+                    {user?._id === item.createdBy._id && (
+                      <Pressable
+                        disabled={deleteCommentMutation.isPending}
+                        onPress={() => handleDeleteReply(item._id)}
+                        className="flex-row items-center gap-5  disabled:opacity-45">
+                        <Text className="font-semibold text-sm text-gray-700">Delete</Text>
+                      </Pressable>
+                    )}
                   </View>
                 </View>
               </View>

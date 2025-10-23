@@ -17,8 +17,8 @@ export function formDate(dateString: string): string {
   } else {
     return date.toLocaleDateString(undefined, {
       year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+      month: 'short',
+      // day: 'numeric',
     });
   }
 }

@@ -9,7 +9,6 @@ import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
 import { router } from 'expo-router';
 import { toast } from 'sonner-native';
-import { Image } from 'expo-image';
 import { Email } from '~/assets/images';
 import { Logo } from '~/components/icons';
 import { useResendVerificationEmail, useVerifyEmail } from '~/hooks/auth';
@@ -17,6 +16,7 @@ import ErrorSheet from '~/components/ui/error-sheet';
 import { useAuthStore } from '~/store/auth';
 import { BottomSheetRef } from '~/components/ui/bottom-sheet';
 import Animated, { ZoomIn } from 'react-native-reanimated';
+import CustomImage from '~/components/ui/image';
 
 const VerifyEmail = () => {
   const form = useForm<OtpFormData>({
@@ -80,7 +80,7 @@ const VerifyEmail = () => {
       <Logo variant="text" />
       <View className="items-center gap-2 ">
         <Animated.View className="items-center rounded-full p-3" entering={ZoomIn.duration(700)}>
-          <Image source={Email} style={{ width: 200, height: 250 }} contentFit="contain" />
+          <CustomImage source={Email} style={{ width: 200, height: 250 }} resizeMode="contain" />
         </Animated.View>
         <Text className=" android:text-3xl  font-semibold text-3xl text-black">
           Verify Your Email

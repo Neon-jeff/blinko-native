@@ -8,7 +8,6 @@ import { Text } from '../ui/text';
 import Logo from '../icons/Logo';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import FormDatePicker from '../ui/form-date-picker';
-import { Image } from 'expo-image';
 import { Profile } from '~/assets/images';
 import { useUpdateProfile, useValidateIdentifier } from '~/hooks/auth';
 import Animated, { ZoomIn } from 'react-native-reanimated';
@@ -20,6 +19,7 @@ import ErrorSheet from '../ui/error-sheet';
 import { cn } from '~/lib/utils';
 import { Check, XCircle } from 'lucide-react-native';
 import { useAuthStore } from '~/store/auth';
+import CustomImage from '../ui/image';
 const DetailsForm = () => {
   const form = useForm<DetailsFormData>({
     resolver: zodResolver(detailsFormSchema),
@@ -76,7 +76,7 @@ const DetailsForm = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="mt-10 flex-1 gap-20">
         <Animated.View className="items-center  gap-2 self-center" entering={ZoomIn.duration(700)}>
-          <Image source={Profile} contentFit="contain" style={{ width: 100, height: 100 }} />
+          <CustomImage source={Profile} resizeMode="contain" style={{ width: 100, height: 100 }} />
         </Animated.View>
 
         <View className=" gap-5 ">

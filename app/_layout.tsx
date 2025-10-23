@@ -21,6 +21,10 @@ import { FullWindowOverlay } from "react-native-screens"
 import { Platform } from 'react-native';
 import { SocketProvider } from '~/components/providers/socket-client';
 
+if (__DEV__) {
+  require("../ReactotronConfig");
+}
+
 SplashScreen.preventAutoHideAsync();
 const RootLayout = () => {
   const [loaded] = useFonts({
@@ -73,6 +77,7 @@ const RootLayout = () => {
                     gestureEnabled: false,
                   }}
                 />
+                <Stack.Screen name="profile" options={{ headerShown: false }} />
               </Stack>
               <Toaster
                 position="bottom-center"

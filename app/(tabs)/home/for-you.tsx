@@ -1,15 +1,27 @@
 import { FlashList } from '@shopify/flash-list';
-import { View, ScrollView, ActivityIndicator,FlatList } from 'react-native';
+import { useEffect } from 'react';
+import { View, ScrollView, ActivityIndicator } from 'react-native';
 import PostCard from '~/components/cards/posts';
-import { useFetchMyPosts, useFetchPostsFeed } from '~/hooks/posts';
+import { usePrefectchActions } from '~/hooks/actions';
+import { useFetchTrendingPosts } from '~/hooks/posts';
 
 const Home = () => {
-  const {data:posts,isLoading} = useFetchPostsFeed()
-  if(isLoading){
-    return <ActivityIndicator size={32} color="gray" className='flex-1 justify-center mt-20 items-center' />
+  const { prefetchConversations } = usePrefectchActions();
+  useEffect(() => {
+    prefetchConversations();
+  }, []);
+  const { data: posts, isLoading } = useFetchTrendingPosts();
+  if (isLoading) {
+    return (
+      <ActivityIndicator
+        size={32}
+        color="gray"
+        className="mt-20 flex-1 items-center justify-center"
+      />
+    );
   }
   return (
-    <View className=" px-5 flex-1 bg-white">
+    <View className=" flex-1 bg-white px-5">
       <FlashList
         data={posts?.data.docs || []}
         renderItem={({ item }) => (
@@ -17,8 +29,8 @@ const Home = () => {
             key={item._id}
             title={item.description}
             content={item.description}
-            date={new Date(item.createdAt).toLocaleDateString()}
-            creator={item.createdBy.fullName}
+            date={item.createdAt}
+            creator={item.createdBy}
             id={item._id}
             images={item.postMedia.map((media) => media.url)}
             likes={item.likes}
@@ -29,7 +41,6 @@ const Home = () => {
         showsVerticalScrollIndicator={false}
         extraData={posts}
         contentContainerStyle={{ gap: 20, paddingBottom: 150 }}
-        
       />
       {/* <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
         <View className="mt-4 px-3 ">
@@ -53,7 +64,6 @@ const Home = () => {
           </View>
         </View>
       </ScrollView> */}
-    
     </View>
   );
 };

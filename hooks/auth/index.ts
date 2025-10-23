@@ -85,10 +85,10 @@ export function useUpdateProfile() {
   });
 }
 
-export function useGetCountries(){
+export function useGetCountries(q: string = '') {
   return useQuery({
-    queryKey: ['countries'],
-    queryFn: () => auth_service().getCountries(),
+    queryKey: ['countries', q],
+    queryFn: () => auth_service().getCountries(q),
   });
 }
 

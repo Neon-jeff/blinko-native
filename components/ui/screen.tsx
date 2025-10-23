@@ -7,12 +7,14 @@ interface ScreenProps extends SafeAreaViewProps {
   children: React.ReactNode;
   style?: ViewStyle;
   isSafeAreaDisabled?: boolean;
+  edges?: SafeAreaViewProps['edges'];
+  scrollEnabled?: boolean;
 }
 
-const Screen = ({children,style,...props}:ScreenProps) => {
+const Screen = ({children,style,scrollEnabled=true,...props}:ScreenProps) => {
   return (
-    <SafeAreaView  {...props} className='flex-1' edges={props.isSafeAreaDisabled ? [] : ['top','left','right','bottom']}>
-      <KeyboardAwareScrollView className='flex-1' showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
+    <SafeAreaView  {...props} className='flex-1' edges={props.isSafeAreaDisabled ? [] : props.edges || ['top','bottom','left','right']}>
+      <KeyboardAwareScrollView className='flex-1' showsVerticalScrollIndicator={false} scrollEnabled={scrollEnabled} nestedScrollEnabled contentContainerStyle={{ flexGrow: 1 }}>
         <View className={cn('bg-white flex-1 px-5', props.className)} style={{flex: 1,...style}}>
            {children}
         </View>

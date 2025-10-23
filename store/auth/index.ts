@@ -3,21 +3,22 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { User } from '~/types';
 import { UserActions, UserState } from './types';
 import { zustandStorage } from '../local-store';
+import { Following } from '~/services/follow/types';
 
 const initialState: UserState = {
   user: null,
   isAuthenticated: false,
   isOnboardingComplete: false,
   isGuestUser: false,
-  rehydrated: false
+  rehydrated: false,
 };
 
 export const useAuthStore = create<UserState & UserActions>()(
   persist(
     (set, get) => ({
       ...initialState,
-      login: (userData: User) => set({ user: userData, isAuthenticated: true,isGuestUser: false }),
-      logout: () => set({ user: null, isAuthenticated: false,isGuestUser: false }),
+      login: (userData: User) => set({ user: userData, isAuthenticated: true, isGuestUser: false }),
+      logout: () => set({ user: null, isAuthenticated: false, isGuestUser: false }),
       updateProfile: (profileData: Partial<User>) =>
         set((state) => ({
           user: state.user ? { ...state.user, ...profileData } : null,
@@ -25,7 +26,44 @@ export const useAuthStore = create<UserState & UserActions>()(
       completeOnboarding: () => set({ isOnboardingComplete: true }),
       setIsGuestUser: (isGuest: boolean) => set({ isGuestUser: isGuest }),
       setUser: (user: User | null) => set({ user }),
-      rehydrated:false
+      updateFollowers: (followers: Following[]) =>
+        set((state) => ({
+          user: state.user
+            ? {
+                ...state.user,
+                profile: state.user.profile ? { ...state.user.profile, followers } : null,
+              }
+            : null,
+        })),
+      addFollowing: (following: Following) =>
+        set((state) => ({
+          user: state.user
+            ? {
+                ...state.user,
+                profile: state.user.profile
+                  ? {
+                      ...state.user.profile,
+                      following: [...state.user.profile.following, following],
+                    }
+                  : null,
+              }
+            : null,
+        })),
+      removeFollowing: (followingId: string) =>
+        set((state) => ({
+          user: state.user
+            ? {
+                ...state.user,
+                profile: state.user.profile
+                  ? {
+                      ...state.user.profile,
+                      following: state.user.profile.following.filter((f) => f._id !== followingId),
+                    }
+                  : null,
+              }
+            : null,
+        })),
+      rehydrated: false,
     }),
     {
       name: 'user-storage',
@@ -36,7 +74,7 @@ export const useAuthStore = create<UserState & UserActions>()(
             state.rehydrated = true;
           }
         };
-      }
+      },
     }
   )
 );

@@ -2,20 +2,19 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useLayoutEffect } from 'react';
 import { router, Tabs } from 'expo-router';
 import TabBar from '~/components/navigation/tab-bar';
-import { BlurView } from 'expo-blur';
 import SharedHeader from '~/components/shared/header';
-import AppDrawer from '~/components/navigation/drawer';
 import { useAuthStore } from '~/store/auth';
 
 const TabsLayout = () => {
   const { isAuthenticated, isGuestUser, user, rehydrated } = useAuthStore();
+
   useEffect(() => {
-    if(!rehydrated) return;
+    if (!rehydrated) return;
     if (!isAuthenticated && !isGuestUser) {
       router.replace('/onboarding');
       return;
     }
-    if (isAuthenticated ) {
+    if (isAuthenticated) {
       if (user?.profile?.fullName === 'not-set') {
         router.replace('/auth/details');
         return;
@@ -25,8 +24,9 @@ const TabsLayout = () => {
         return;
       }
     }
-  }, [user, isAuthenticated, isGuestUser, rehydrated]);
-  if(!rehydrated) return null;
+  }, [user?.profile, isAuthenticated, isGuestUser, rehydrated]);
+
+  if (!rehydrated) return null;
   if (!user && !isGuestUser) return null;
   return (
     // <AppDrawer>
@@ -68,8 +68,7 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="create-post"
         options={{
-          href:null
-         
+          href: null,
         }}
       />
 

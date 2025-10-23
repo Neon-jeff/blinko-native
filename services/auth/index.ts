@@ -1,6 +1,13 @@
 import { http, ApiResponse } from '~/api';
 import { Profile, User } from '~/types';
-import { ChangePasswordBody, Country, CreateAccountBody, LoginBody, State, ValidateCredentialsBody } from './types';
+import {
+  ChangePasswordBody,
+  Country,
+  CreateAccountBody,
+  LoginBody,
+  State,
+  ValidateCredentialsBody,
+} from './types';
 
 export class AuthService {
   private routes = {
@@ -158,9 +165,11 @@ export class AuthService {
     }
   }
 
-  async getCountries() {
+  async getCountries(query?: string) {
     try {
-      const response = await http.get<ApiResponse<Country[]>>(this.routes.countries);
+      const response = await http.get<ApiResponse<Country[]>>(this.routes.countries, {
+        searchParams: { q: query },
+      });
       return await response.json();
     } catch (error) {
       console.error('Get countries failed:', error);

@@ -1,10 +1,10 @@
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { BottomSheetModal, BottomSheetRef } from './bottom-sheet';
-import { Image } from 'expo-image';
 import { ErrorIcon } from '~/assets/images';
 import { Button } from './button';
 import { Text } from './text';
+import CustomImage from './image';
 
 interface ErrorSheetProps {
   ref: React.RefObject<BottomSheetRef | null>;
@@ -25,8 +25,8 @@ const ErrorSheet = ({
     <BottomSheetModal.Root ref={ref}>
       <BottomSheetModal.Content className="flex-1">
         <View className="flex-1 items-center justify-between gap-4 ">
-          <View className='items-center justify-center gap-5 mt-10'>
-            <Image
+          <View className="mt-10 items-center justify-center gap-5">
+            <CustomImage
               source={ErrorIcon}
               style={{
                 width: 100,

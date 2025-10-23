@@ -2,7 +2,6 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import React from 'react';
 import { useAuthStore } from '~/store/auth';
-import { Image } from 'expo-image';
 import {
   Airdrop,
   Call,
@@ -16,15 +15,18 @@ import {
 } from 'iconsax-react-native';
 import { Text } from '~/components/ui/text';
 import { router } from 'expo-router';
+import CustomImage from '~/components/ui/image';
 
 interface ProfileSheetContentProps {
-    onLogout?: () => void;
+    onNavigate?: () => void;
 }
 
-const ProfileSheetContent = ({ onLogout }: ProfileSheetContentProps) => {
+const ProfileSheetContent = ({ onNavigate }: ProfileSheetContentProps) => {
   const { user, logout,isGuestUser } = useAuthStore();
   function handleProfilePress() {
     //
+    onNavigate?.();
+    router.push('/profile/me');
   }
   const routes = [
     {
@@ -59,7 +61,7 @@ const ProfileSheetContent = ({ onLogout }: ProfileSheetContentProps) => {
     },
   ];
   function handleLogout() {
-    onLogout?.();
+    onNavigate?.();
     logout();
     router.replace('/onboarding');
   }
@@ -71,8 +73,8 @@ const ProfileSheetContent = ({ onLogout }: ProfileSheetContentProps) => {
       <View className="flex-row items-center justify-between border-b border-gray-100 pb-2">
         <Pressable onPress={handleProfilePress} className="flex-row items-center gap-3 ">
           {user?.profile?.displayPhoto?.url && (
-            <Image
-              source={user?.profile?.displayPhoto?.url}
+            <CustomImage
+              source={{ uri: user?.profile?.displayPhoto?.url }}
               style={{
                 width: 50,
                 height: 50,

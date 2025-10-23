@@ -5,7 +5,6 @@ import { Text } from '~/components/ui/text';
 import { Check, Image as ImageIcon, Profile } from 'iconsax-react-native';
 import React from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { Image } from 'expo-image';
 import { cn } from '~/lib/utils';
 import { router } from 'expo-router';
 import { Logo } from '~/components/icons';
@@ -13,6 +12,7 @@ import { useUploadProfileImage } from '~/hooks/auth';
 import { useAuthStore } from '~/store/auth';
 import ErrorSheet from '~/components/ui/error-sheet';
 import { BottomSheetRef } from '~/components/ui/bottom-sheet';
+import CustomImage from '~/components/ui/image';
 
 const AddImage = () => {
   const [image, setImage] = React.useState<string | null>(null);
@@ -63,7 +63,7 @@ const  handleSkip = () =>{
             {!image && <Profile color="#d1d1d1" size={124} />}
             {image && (
               <View className="h-40 w-40 overflow-hidden rounded-full">
-                <Image source={image} style={{ width: '100%', height: '100%' }} />
+                <CustomImage source={{ uri: image }} style={{ width: '100%', height: '100%' }} />
               </View>
             )}
             {/* <View className="absolute -bottom-5 right-0 left-0 items-center">

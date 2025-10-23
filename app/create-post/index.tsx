@@ -135,7 +135,7 @@ const CreatePost = () => {
               alignSelf: 'flex-end',
               maxHeight: 600,
               height: 100,
-            }
+            },
           ]}
           onChangeText={setDescription}
         />
@@ -169,11 +169,23 @@ const CreatePost = () => {
             data={uploadedImageUri}
             horizontal
             renderItem={({ item }) => (
-              <CustomImage
-                source={item}
-                className=" mr-5 mt-4 h-48 w-40 rounded-xl bg-white"
-                contentFit="cover"
-              />
+              <View>
+                <Pressable hitSlop={20} className="absolute z-10 bg-white p-2 rounded-full right-3 top-1">
+                  <X
+                    size={20}
+                    color="black"
+                    strokeWidth={2}
+                    onPress={() => {
+                      setUploadedImageUri((prev) => prev?.filter((uri) => uri !== item) || null);
+                    }}
+                  />
+                </Pressable>
+                <CustomImage
+                  source={{ uri: item }}
+                  className=" mr-5 mt-4 h-48 w-40 rounded-xl bg-white"
+                  resizeMode="cover"
+                />
+              </View>
             )}
             showsHorizontalScrollIndicator={false}
           />

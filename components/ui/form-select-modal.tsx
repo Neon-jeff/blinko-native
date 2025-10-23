@@ -25,19 +25,20 @@ import { BottomSheetModal, BottomSheetRef } from './bottom-sheet';
 import { FlashList } from '@shopify/flash-list';
 import { Input } from './input';
 
-interface FormSelectProps<T extends FieldValues,K> {
+interface FormSelectProps<T extends FieldValues, K> {
   name: Path<T>;
   control: Control<T>;
   rules?: RegisterOptions<T>;
   defaultValue?: PathValue<T, Path<T>>;
   label: string;
   data: K[];
-  RenderItem: ({ item, selected }: { item: K; selected?: boolean }) => React.ReactNode;
+  RenderItem: ({ item, selected }: { item: K; selected?: boolean; }) => React.ReactNode;
   placeholder?: string;
   disabled?: boolean;
   onSearchChange?: (text: string) => void;
   searchPlaceholder?: string;
   showSearch?: boolean;
+  sheetRef?: React.RefObject<BottomSheetRef | null>;
 }
 
 const FormSelectModal = <T extends FieldValues, K>({
@@ -53,6 +54,7 @@ const FormSelectModal = <T extends FieldValues, K>({
   onSearchChange,
   searchPlaceholder,
   showSearch = false,
+  sheetRef,
 }: FormSelectProps<T, K>) => {
   const textcolor = useSharedValue(constants.theme.label.blur);
   const animatedTextStyle = useAnimatedStyle(() => ({
@@ -82,16 +84,25 @@ const FormSelectModal = <T extends FieldValues, K>({
           <TouchableOpacity
             disabled={disabled}
             className="h-12 justify-center rounded-xl border border-gray-100 bg-gray-100 px-2"
-            onPress={() => modalRef.current?.open()}>
-            <Text className={cn('text-base', !field.value && 'text-gray-400')}>{field.value || placeholder}</Text>
+            onPress={() => sheetRef?.current?.open()}>
+            <Text className={cn('text-base', !field.value && 'text-gray-400')}>
+              {field.value || placeholder}
+            </Text>
           </TouchableOpacity>
 
-          <BottomSheetModal.Root ref={modalRef}>
-            <BottomSheetModal.Content className="px-2 pt-5 gap-4">
-              <Input placeholder='Search Country' onChangeText={onSearchChange} containerClassName='overflow-hidden' className='bg-gray-50'/>
+          <BottomSheetModal.Root ref={sheetRef}>
+            <BottomSheetModal.Content className="gap-4 px-2 pt-5">
+              {showSearch && (
+                <Input
+                  placeholder={searchPlaceholder || 'Search...'}
+                  onChangeText={onSearchChange}
+                  containerClassName="overflow-hidden"
+                  className="bg-gray-50"
+                />
+              )}
               <FlashList
                 data={data}
-                extraData={{selected: field.value}}
+                extraData={{ selected: field.value }}
                 renderItem={({ item }) => <RenderItem item={item} />}
                 keyExtractor={(_, index) => index.toString() + label}
               />

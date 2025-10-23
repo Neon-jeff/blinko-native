@@ -6,7 +6,6 @@ import { Button } from '../ui/button';
 import { Text } from '../ui/text';
 import Logo from '../icons/Logo';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
-import { Image } from 'expo-image';
 import { Location } from '~/assets/images';
 import { router } from 'expo-router';
 import FormSelectModal from '../ui/form-select-modal';
@@ -18,6 +17,7 @@ import { BottomSheetRef } from '../ui/bottom-sheet';
 import { useAuthStore } from '~/store/auth';
 import { toast } from 'sonner-native';
 import ErrorSheet from '../ui/error-sheet';
+import CustomImage from '../ui/image';
 
 const LocationForm = () => {
   const form = useForm<LocationFormData>({
@@ -29,8 +29,11 @@ const LocationForm = () => {
   });
   const updateProfile = useUpdateProfile();
   const sheetRef = React.useRef<BottomSheetRef>(null);
+  const stateRef = React.useRef<BottomSheetRef>(null);
+  const countryRef = React.useRef<BottomSheetRef>(null);
   const { updateProfile: updateStoreProfile } = useAuthStore();
-  const { data: countriesData } = useGetCountries();
+  const [countryParams, setCountryParams] = React.useState('');
+  const { data: countriesData } = useGetCountries(countryParams);
   const { data: states } = useGetStates(
     form.watch('country')
       ? countriesData?.data.find((c) => c.name === form.watch('country'))?.code || ''
@@ -60,9 +63,13 @@ const LocationForm = () => {
 
   function handleSelectCountry(country: Country) {
     form.setValue('country', country.name);
+    countryRef.current?.close();
+    stateRef.current?.open();
+    setCountryParams('')
   }
   function handleSelectState(state: State) {
     form.setValue('state', state.name);
+    stateRef.current?.close();
   }
 
   return (
@@ -72,7 +79,7 @@ const LocationForm = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="mt-10 flex-1">
         <View className="items-center  gap-2 self-center ">
-          <Image source={Location} style={{ width: 200, height: 200 }} contentFit='cover' />
+          <CustomImage source={Location} style={{ width: 200, height: 200 }} resizeMode='cover' />
           <Text className=" android:text-3xl px-10 text-center  font-semibold text-2xl text-black">
             Enter your location details
           </Text>
@@ -84,15 +91,19 @@ const LocationForm = () => {
             label="Enter your country"
             data={countriesData?.data || []}
             placeholder="Select Country"
+            searchPlaceholder="Search country"
+            showSearch
+            onSearchChange={setCountryParams}
+            sheetRef={countryRef}
             RenderItem={({ item, selected = item.name === form.getValues('country') }) => (
               <TouchableOpacity
                 onPress={() => handleSelectCountry(item)}
                 className={cn('flex-row items-center justify-between pb-6')}>
                 <View className="flex-row items-center gap-3">
-                  <Image
-                    source={item.flag}
+                  <CustomImage
+                    source={{ uri: item.flag }}
                     style={{ width: 24, height: 24, borderRadius: 100 }}
-                    contentFit="cover"
+                    resizeMode="cover"
                   />
                   <Text className={cn('text-base', selected && 'font-semibold text-lg')}>
                     {item.name}
@@ -108,6 +119,7 @@ const LocationForm = () => {
             label="Enter your state"
             disabled={!form.watch('country')}
             data={states?.data || []}
+            sheetRef={stateRef}
             placeholder={
               states?.data && states?.data.length > 0 ? states.data[0].name : 'Select State'
             }

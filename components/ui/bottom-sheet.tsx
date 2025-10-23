@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
-import { Gesture, GestureDetector,ScrollView } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedReaction,
   useAnimatedStyle,

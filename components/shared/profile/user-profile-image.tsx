@@ -7,16 +7,17 @@ import { cn } from '~/lib/utils';
 
 interface ProfileImageProps {
   className?: string;
+  size?: number;
 }
 
-const UserProfileImage: React.FC<ProfileImageProps> = ({ className }) => {
+const UserProfileImage: React.FC<ProfileImageProps> = ({ className, size = 40 }) => {
   const { user } = useAuthStore();
   return (
     <>
       {user?.profile?.displayPhoto?.url && (
         <CustomImage
-          source={user?.profile?.displayPhoto?.url}
-          className={cn('w-10 h-10 rounded-full', className)}
+          source={{ uri: user.profile.displayPhoto.url }}
+          style={{ resizeMode: 'cover', height: size, width: size, borderRadius: 1000 }}
         />
       )}
       {!user?.profile?.displayPhoto?.url && (

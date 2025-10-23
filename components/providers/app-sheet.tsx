@@ -25,7 +25,7 @@ export const AppSheetProvider = ({ children }: { children: React.ReactNode }) =>
       {children}
       <BottomSheetModal.Root ref={sheetRef} >
         <BottomSheetModal.Content>
-          <ProfileSheetContent onLogout={closeAppSheet} />
+          <ProfileSheetContent onNavigate={closeAppSheet} />
         </BottomSheetModal.Content>
           {/* Your sheet content goes here */}
       </BottomSheetModal.Root>

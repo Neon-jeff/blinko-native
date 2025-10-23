@@ -1,23 +1,31 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import React from 'react';
 import { Text } from '~/components/ui/text';
-import { Image } from 'expo-image';
-import { ManProfile } from '~/assets/images';
 import { cn } from '~/lib/utils';
 import { router } from 'expo-router';
+import { Conversation } from '~/services/chat/types';
+import { formDate } from '~/utils/date';
+import { usePrefectchActions } from '~/hooks/actions';
+import { useAuthStore } from '~/store/auth';
+import { Check } from 'lucide-react-native';
 
 interface ChatCardProps {
-  sender: string;
-  last_message: string;
-  is_seen: boolean;
-  time: string;
-  sender_image?: string;
+  chat: Conversation;
 }
 
-const ChatCard = ({ sender, last_message, is_seen, time, sender_image }: ChatCardProps) => {
+const ChatCard = ({ chat }: ChatCardProps) => {
+  const { user } = useAuthStore();
+  const { prefetchChatMessages } = usePrefectchActions();
   function handleChatPress() {
-    router.push(`/chat/${sender}`);
+    prefetchChatMessages(chat._id);
+    router.push(`/chat/${chat._id}`);
   }
+  const is_seen = chat?.lastMessage?.readBy?.length > 0;
+  const otherChatParticipant =
+    chat.participants.find((participant) => participant._id !== user?.profile?._id) || null;
+  const lastChatSender = chat.participants.find(
+    (participant) => participant._id === chat.lastMessage.sender
+  );
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -26,24 +34,34 @@ const ChatCard = ({ sender, last_message, is_seen, time, sender_image }: ChatCar
       <View>
         {
           <Image
-            recyclingKey={sender}
-            source={ManProfile}
+            source={{ uri: otherChatParticipant?.displayPhoto?.url }}
             style={{
               height: 40,
               width: 40,
               borderRadius: 1000,
+              aspectRatio: 1,
             }}
+            resizeMode="cover"
           />
         }
-        <View className='h-3 w-3 bg-green-500 border-2 border-white rounded-full absolute right-0.5 -bottom-1' />
+        {/* <View className="absolute -bottom-1 right-0.5 h-3 w-3 rounded-full border-2 border-white bg-green-500" /> */}
       </View>
       <View className="flex-1 gap-1">
-        <Text className={cn('font-semibold text-gray-800', !is_seen && 'text-gray-500')}>
-          {sender}
+        <Text
+          className={cn(
+            'font-semibold text-gray-800',
+            !chat.lastMessage.readBy.length && 'text-gray-500'
+          )}>
+          {otherChatParticipant?.fullName || ''}
         </Text>
-        <Text className={cn('text-gray-800 font-medium', !is_seen && 'text-gray-400')}>{last_message}</Text>
+        <View className="flex-row items-center gap-1">
+          {lastChatSender?._id === user?.profile?._id && <Check size={16} color={'gray'} />}
+          <Text numberOfLines={1} className={cn('font-medium text-gray-800', !is_seen && 'text-gray-400')}>
+            {chat.lastMessage.text}
+          </Text>
+        </View>
       </View>
-      <Text className={cn('text-xs')}>{time}</Text>
+      <Text className={cn('text-xs')}>{formDate(chat.lastMessage.createdAt)}</Text>
     </TouchableOpacity>
   );
 };

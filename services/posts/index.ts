@@ -120,7 +120,7 @@ export class PostService {
     try {
       return http.get<ApiResponse<FetchPostResponse>>(this.routes.posts.get_trending, {
         searchParams: { ...params },
-      });
+      }).json();
     } catch (error) {
       console.log('Error fetching trending posts:', error);
       throw error;
@@ -228,7 +228,7 @@ export class PostService {
 
   async likeComment(id: string) {
     try {
-      return http.post<ApiResponse<null>>(this.routes.comments.like_comment(id)).json();
+      return http.put<ApiResponse<null>>(this.routes.comments.like_comment(id)).json();
     } catch (error) {
       console.log('Error liking comment:', error);
       throw error;
@@ -237,7 +237,7 @@ export class PostService {
 
   async unlikeComment(id: string) {
     try {
-      return http.post<ApiResponse<null>>(this.routes.comments.unlike_comment(id)).json();
+      return http.put<ApiResponse<null>>(this.routes.comments.unlike_comment(id)).json();
     } catch (error) {
       console.log('Error unliking comment:', error);
       throw error;

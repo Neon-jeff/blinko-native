@@ -3,15 +3,10 @@ import {
   View,
   ActivityIndicator,
   TextInput,
-  TouchableWithoutFeedback,
 } from 'react-native';
-import { Input } from '~/components/ui/input';
-import { ArrowUp, Send2 } from 'iconsax-react-native';
+import { ArrowUp } from 'iconsax-react-native';
 import {
   KeyboardAvoidingView,
-  KeyboardExtender,
-  OverKeyboardView,
-  useKeyboardController,
   useKeyboardState,
 } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,6 +18,7 @@ import * as Haptics from 'expo-haptics';
 import Animated from 'react-native-reanimated';
 import { ScrollView } from 'react-native-gesture-handler';
 import { sizes } from '~/constants/sizes';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CommentsKeyboardProps {
   onAddComment?: () => void;
@@ -46,11 +42,15 @@ const CommentsKeyboard = ({
   const addReplyMutation = useReplyComment();
   const [placeholder, setPlaceholder] = React.useState('Enter a comment');
   const {} = useKeyboardState();
+  const queryClient = useQueryClient()
+
+  useEffect(()=>{
+    resetMode?.();
+  },[])
 
   useEffect(() => {
     if (commentMode === 'reply' && inputRef.current) {
       setPlaceholder(`Reply to ${replyTo?.createdBy?.fullName || 'user'} comment`);
-      console.log('Focusing input for reply');
       inputRef.current.focus();
     }
   }, [commentMode]);
@@ -60,27 +60,21 @@ const CommentsKeyboard = ({
     const currentText = comment;
     const newText = currentText + emoji;
     setComment(newText);
-    // requestAnimationFrame(() => {
-    //   setTimeout(() => inputRef.current?.focus(), 0);
-    // });
   }
 
   function handleAddComment() {
-    // console.log({ commentMode, replyTo });
-    // return;
     if (comment.trim().length === 0) return;
     if (commentMode === 'reply' && replyTo) {
       addReplyMutation.mutate(
         { content: comment, post: postId, parentComment: replyTo._id },
         {
-          onSuccess(data) {
-            console.log("Added a reply", data);
-            onAddComment?.();
+          onSuccess() {
+            queryClient.resetQueries({
+              queryKey:['comment-replies',replyTo._id]
+            })
             setComment('');
             setPlaceholder('Enter a comment');
-            setTimeout(() => {
-              resetMode?.();
-            }, 500);
+            resetMode?.();
           },
         }
       );
@@ -91,7 +85,6 @@ const CommentsKeyboard = ({
         { content: comment, post: postId },
         {
           onSuccess(data) {
-            console.log("Added a comment", data);
             onAddComment?.();
             setComment('');
           },
@@ -138,7 +131,7 @@ const CommentsKeyboard = ({
           onChangeText={setComment}
           multiline
           returnKeyType="send"
-          returnKeyLabel="Send Message"
+          returnKeyLabel="Add comment"
           placeholder={placeholder}
           className="flex-grow rounded-3xl bg-gray-100 p-4 font-medium placeholder:text-gray-400 "
           // containerClassName=" flex-1 bg-gray-100 flex-col flex-grow h-50 rounded-full  w-full border-white"

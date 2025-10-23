@@ -1,3 +1,5 @@
+import { Following } from "~/services/follow/types"
+
 export interface User {
   _id: string
   fullName: string
@@ -13,8 +15,8 @@ export interface User {
 }
 
 export interface Profile {
-  followers: any[]
-  following: any[]
+  followers: Following[]
+  following: Following[]
   _id: string
   fullName: string
   email: string

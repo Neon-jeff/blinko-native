@@ -1,3 +1,4 @@
+import { Following } from "~/services/follow/types";
 import { User } from "~/types";
 
 export type UserState = {
@@ -14,4 +15,7 @@ export type UserActions = {
     completeOnboarding: () => void;
     setIsGuestUser: (isGuest: boolean) => void;
     setUser: (user: User | null) => void;
+    updateFollowers: (followers: Following[]) => void;
+    addFollowing: (following: Following) => void;
+    removeFollowing: (followingId: string) => void;
 };

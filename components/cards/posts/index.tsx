@@ -1,25 +1,26 @@
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import React from 'react';
-import { Image } from 'expo-image';
 import { Text } from '~/components/ui/text';
 import { sizes } from '~/constants/sizes';
 import Dots from '~/components/icons/Dots';
-import { HeartIcon, MessageCircle, PlusCircle, Send } from 'lucide-react-native';
+import { PlusCircle, Send } from 'lucide-react-native';
 import { BlinkoCurrency } from '~/components/icons';
 import CustomImage from '~/components/ui/image';
 import { useLikePost, useUnlikePost } from '~/hooks/posts';
 import { useAuthStore } from '~/store/auth';
-import { Comment, Like } from '~/services/posts/types';
+import { CreatedBy, Like } from '~/services/posts/types';
 import { BottomSheetRef } from '~/components/ui/bottom-sheet';
 import Comments from './comments';
 import { Heart, Message } from 'iconsax-react-native';
 import { cn } from '~/lib/utils';
+import { formDate } from '~/utils/date';
+import { ProfileImage } from '~/components/shared';
 
 interface PostCardProps {
   title: string;
   content: string;
   date: string;
-  creator: string;
+  creator: CreatedBy;
   images: string[];
   id: string;
   likes?: Like[];
@@ -40,14 +41,14 @@ const PostCard = ({
   const imageWidth = sizes.screen.width - padding;
   const sheetRef = React.useRef<BottomSheetRef>(null);
   return (
-    <View className="gap-2.5  border-b border-gray-50 bg-white  pb-6">
+    <View className="mb-6   gap-2.5">
       <View className="flex-row items-center justify-between ">
-        <View className="flex-row items-center gap-1">
-          <Image
-            source={'https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg'}
-            style={{ width: 40, height: 40, borderRadius: 20 }}
-          />
-          <Text className="text-sm text-gray-500">@{creator}</Text>
+        <View className="flex-row items-center gap-4">
+          <ProfileImage source={creator.displayPhoto?.url} className="size-14" iconSize={30} />
+          <View className="gap-1">
+            <Text className="text-base text-gray-800">@{creator.fullName}</Text>
+            <Text className="  text-sm  text-gray-600">{formDate(date)}</Text>
+          </View>
         </View>
         <View className=" flex-row items-center gap-4 text-sm text-gray-600">
           <Pressable
@@ -73,27 +74,31 @@ const PostCard = ({
         renderItem={({ item }) => (
           <View className="flex-1" style={{ width: imageWidth }}>
             <CustomImage
-              className="w-full rounded-lg"
-              source={item}
-              // style={{
-              //   width: sizes.screen.width * 0.4,
-              //   height: 200,
-              //   borderRadius: 8,
-              // }}
+              // className="w-full rounded-lg"
+              source={{ uri: item }}
+              style={{
+                width: sizes.screen.width * 0.9,
+                height: sizes.screen.height * 0.4,
+                borderRadius: 8,
+              }}
             />
           </View>
         )}
-        keyExtractor={(index) => index.toString()}
+        keyExtractor={(item, index) => item + index.toString()}
         contentContainerStyle={{ gap: 2 }}
         showsHorizontalScrollIndicator={false}
         decelerationRate={-1}
         snapToInterval={imageWidth}
       />
       <View className="mt-5 w-full flex-row items-center  justify-between">
-        <Text className="text-sm text-gray-600">{date}</Text>
-        <PostInteractions id={id} likes={likes} commentRef={sheetRef} commentsCount={commentCount} />
+        <PostInteractions
+          id={id}
+          likes={likes}
+          commentRef={sheetRef}
+          commentsCount={commentCount}
+        />
       </View>
-    <Comments ref={sheetRef} postId={id} />
+      <Comments ref={sheetRef} postId={id} />
     </View>
   );
 };
@@ -102,12 +107,12 @@ function PostInteractions({
   id,
   likes,
   commentRef,
-  commentsCount
+  commentsCount,
 }: {
   id: string;
   likes?: Like[];
   commentRef: React.RefObject<BottomSheetRef | null>;
-  commentsCount: number
+  commentsCount: number;
 }) {
   const likeMutation = useLikePost();
   const unlikeMutation = useUnlikePost();
@@ -171,7 +176,7 @@ function PostInteractions({
       return 'text-red-500';
     }
     return 'text-gray-500';
-  } 
+  }
 
   return (
     <View className="flex-1 flex-row justify-end gap-5">
@@ -188,7 +193,13 @@ function PostInteractions({
             variant={interaction.label === 'Like' ? (isLiked ? 'Bold' : 'Linear') : 'Linear'}
             strokeWidth={1.5}
           />
-          <Text className={cn("text-sm text-gray-500 font-semibold",interactionLabelStyles(interaction.label))}>{interaction.count}</Text>
+          <Text
+            className={cn(
+              'font-semibold text-sm text-gray-500',
+              interactionLabelStyles(interaction.label)
+            )}>
+            {interaction.count}
+          </Text>
         </Pressable>
       ))}
     </View>

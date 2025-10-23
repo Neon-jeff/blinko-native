@@ -29,7 +29,7 @@ const SignUpForm = () => {
   function handleSubmit(data: LoginFormData) {
     handleLogin.mutate(
       {
-        identifier: data.email.toLocaleLowerCase(),
+        identifier: data.email.toLowerCase(),
         password: data.password,
       },
       {

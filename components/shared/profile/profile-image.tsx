@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import CustomImage from '~/components/ui/image';
 import { ProfileCircle } from 'iconsax-react-native';
@@ -14,7 +14,7 @@ const ProfileImage: React.FC<ProfileImageProps> = ({ className, source, iconSize
   return (
     <>
       {!!source && (
-        <CustomImage source={source} className={cn('h-10 w-10 rounded-full', className)} />
+        <CustomImage source={{ uri: source }} className={cn('size-12 rounded-full', className)} />
       )}
       {!source && (
         <View className="rounded-full bg-gray-100 p-2">

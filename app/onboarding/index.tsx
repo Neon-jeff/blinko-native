@@ -1,6 +1,6 @@
 import { ImageSourcePropType, Platform, Pressable, View } from 'react-native';
 import React from 'react';
-import { Earn, OnboardingImageOne, OnlineMarketing, Streamer } from '~/assets/images';
+import { Earn, OnboardingImageOne, OnlineMarketing } from '~/assets/images';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
@@ -9,7 +9,6 @@ import Animated, { FadeInUp, runOnJS } from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import * as NavigationBar from 'expo-navigation-bar';
-import { Logo } from '~/components/icons';
 import { useAuthStore } from '~/store/auth';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 

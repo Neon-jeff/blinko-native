@@ -2,7 +2,6 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import React from 'react';
 import CustomImage from '../ui/image';
 import { Text } from '../ui/text';
-import { Image } from 'expo-image';
 import { ArrowRotateRight } from 'iconsax-react-native';
 
 interface ImagePreviewProps {
@@ -20,14 +19,14 @@ const ImagePreview = ({ onRetake, imageUri, onClose, onAddImage }: ImagePreviewP
     }
   return (
     <View className="flex-1 bg-red-100 z-50" style={StyleSheet.absoluteFill}>
-      <Image
+      <CustomImage
         source={{ uri: imageUri }}
         style={{
           width: '100%',
           height: '100%',
           backgroundColor: 'black',
         }}
-        contentFit="cover"
+        resizeMode="cover"
       />
       <View className='absolute top-5 px-4 w-full justify-between items-center flex-row'>
         <Pressable

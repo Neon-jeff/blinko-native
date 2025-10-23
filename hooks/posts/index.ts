@@ -105,3 +105,15 @@ export function useGetCommentReplies(params:{ commentId:string} & PaginationPara
         enabled:!!params.commentId
     })
 }
+
+export function useLikeComment(){
+    return useMutation({
+        mutationFn:(id:string)=> postService.likeComment(id)
+    })
+}
+
+export function useUnlikeComment(){
+    return useMutation({
+        mutationFn:(id:string)=> postService.unlikeComment(id)
+    })
+}
