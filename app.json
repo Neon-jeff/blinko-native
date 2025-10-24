@@ -35,7 +35,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.blinko.blinkomobileapp"
+      "package": "com.anonymous.blinkomobileapp"
     }
   }
 }
